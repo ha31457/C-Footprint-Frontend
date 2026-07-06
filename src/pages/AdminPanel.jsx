@@ -1,39 +1,63 @@
 import { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import apiClient from '../api/apiClient';
+import CustomDropdown from '../components/CustomDropdown';
 
 const COLORS = ['#225c3b', '#0284c7', '#769482', '#0f766e'];
+
+const RANGE_OPTIONS = [
+  { value: 'daily', label: 'Daily (Last 7 Days)' },
+  { value: 'weekly', label: 'Weekly (Last 4 Weeks)' },
+  { value: 'monthly', label: 'Monthly (Last 6 Months)' },
+  { value: 'yearly', label: 'Yearly (Last 3 Years)' },
+];
 
 export default function AdminPanel() {
   const [usersStat, setUsersStat] = useState(null);
   const [activitiesStat, setActivitiesStat] = useState(null);
   const [usersList, setUsersList] = useState([]);
+  const [range, setRange] = useState('daily');
   const [loading, setLoading] = useState(true);
+  const [activitiesLoading, setActivitiesLoading] = useState(false);
   const [usersLoading, setUsersLoading] = useState(true);
   const [error, setError] = useState('');
   const [disableFeedback, setDisableFeedback] = useState('');
 
-  const fetchAdminStats = async () => {
-    try {
-      const [usersRes, activitiesRes, listRes] = await Promise.all([
-        apiClient.get('/admin/users'),
-        apiClient.get('/admin/activities'),
-        apiClient.get('/admin/users/all'),
-      ]);
-      setUsersStat(usersRes.data);
-      setActivitiesStat(activitiesRes.data);
-      setUsersList(listRes.data || []);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch admin stats');
-    } finally {
-      setLoading(false);
-      setUsersLoading(false);
-    }
-  };
-
+  // Initial load for users stat and users list (they don't depend on range)
   useEffect(() => {
-    fetchAdminStats();
+    const initData = async () => {
+      try {
+        const [usersRes, listRes] = await Promise.all([
+          apiClient.get('/admin/users'),
+          apiClient.get('/admin/users/all'),
+        ]);
+        setUsersStat(usersRes.data);
+        setUsersList(listRes.data || []);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch platform metrics');
+      } finally {
+        setUsersLoading(false);
+      }
+    };
+    initData();
   }, []);
+
+  // Fetch activities when range changes
+  useEffect(() => {
+    const fetchActivities = async () => {
+      setActivitiesLoading(true);
+      try {
+        const res = await apiClient.get(`/admin/activities?range=${range}`);
+        setActivitiesStat(res.data);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch platform analytics');
+      } finally {
+        setActivitiesLoading(false);
+        setLoading(false);
+      }
+    };
+    fetchActivities();
+  }, [range]);
 
   const handleDisableUser = async (userId) => {
     if (!window.confirm('Are you sure you want to disable this user account? This will log them out instantly.')) {
@@ -64,6 +88,8 @@ export default function AdminPanel() {
   };
 
   if (loading) return <div className="loading-screen">Loading Admin Dashboard...</div>;
+
+  const trendData = activitiesStat?.trend || [];
 
   return (
     <div className="dashboard">
@@ -115,10 +141,11 @@ export default function AdminPanel() {
 
       {/* Chart Visual Breakdown */}
       <section className="chart-grid" style={{ marginBottom: '2.5rem' }}>
-        <div className="chart-card" style={{ gridColumn: 'span 2' }}>
-          <h3>Global Category Breakdown (CO2 Emissions Contribution)</h3>
+        {/* Left Card: Pie Chart Breakdown */}
+        <div className="chart-card">
+          <h3>Global Category Breakdown</h3>
           {activitiesStat?.categoryBreakdown && activitiesStat.categoryBreakdown.length > 0 ? (
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                 <Pie
                   data={activitiesStat.categoryBreakdown}
@@ -126,7 +153,7 @@ export default function AdminPanel() {
                   nameKey="category"
                   cx="50%"
                   cy="50%"
-                  outerRadius={100}
+                  outerRadius={90}
                   label={(props) => {
                     const { name, percent, payload } = props;
                     if (!percent || percent <= 0) return '';
@@ -144,9 +171,43 @@ export default function AdminPanel() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)' }}>
               No carbon logs recorded on the platform yet.
-            </p>
+            </div>
+          )}
+        </div>
+
+        {/* Right Card: Multi-Range Platform Trend Chart */}
+        <div className="chart-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0 }}>Global Emissions Trend</h3>
+            <div style={{ width: '200px' }}>
+              <CustomDropdown
+                options={RANGE_OPTIONS}
+                value={range}
+                onChange={(val) => setRange(val)}
+                placeholder="Select Range"
+              />
+            </div>
+          </div>
+          {activitiesLoading ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)' }}>
+              Loading trend data...
+            </div>
+          ) : trendData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={trendData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="label" />
+                <YAxis />
+                <Tooltip formatter={(value) => `${parseFloat(value).toFixed(2)} kg`} />
+                <Line type="monotone" dataKey="co2Emission" stroke="#0284c7" strokeWidth={3} activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)', textAlign: 'center' }}>
+              No trend data available for this range.
+            </div>
           )}
         </div>
       </section>

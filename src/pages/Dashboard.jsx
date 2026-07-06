@@ -2,8 +2,16 @@ import { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import apiClient from '../api/apiClient';
 import { useAuth } from '../context/AuthContext';
+import CustomDropdown from '../components/CustomDropdown';
 
 const COLORS = ['#225c3b', '#0284c7', '#769482', '#0f766e'];
+
+const RANGE_OPTIONS = [
+  { value: 'daily', label: 'Daily (Last 7 Days)' },
+  { value: 'weekly', label: 'Weekly (Last 4 Weeks)' },
+  { value: 'monthly', label: 'Monthly (Last 6 Months)' },
+  { value: 'yearly', label: 'Yearly (Last 3 Years)' },
+];
 
 const PLACEHOLDER_SUMMARY = {
   todayTotalEmission: 4.8,
@@ -13,27 +21,29 @@ const PLACEHOLDER_SUMMARY = {
     { category: 'food', co2Emission: 1.4, percentage: 16.7 },
     { category: 'shopping', co2Emission: 0.0, percentage: 0.0 },
   ],
-  weeklyTrend: [
-    { date: '2026-06-30', co2Emission: 1.2 },
-    { date: '2026-07-01', co2Emission: 3.5 },
-    { date: '2026-07-02', co2Emission: 2.4 },
-    { date: '2026-07-03', co2Emission: 5.1 },
-    { date: '2026-07-04', co2Emission: 1.8 },
-    { date: '2026-07-05', co2Emission: 4.0 },
-    { date: '2026-07-06', co2Emission: 4.8 },
+  trend: [
+    { label: '2026-06-30', co2Emission: 1.2 },
+    { label: '2026-07-01', co2Emission: 3.5 },
+    { label: '2026-07-02', co2Emission: 2.4 },
+    { label: '2026-07-03', co2Emission: 5.1 },
+    { label: '2026-07-04', co2Emission: 1.8 },
+    { label: '2026-07-05', co2Emission: 4.0 },
+    { label: '2026-07-06', co2Emission: 4.8 },
   ],
 };
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
+  const [range, setRange] = useState('daily');
   const [usingPlaceholder, setUsingPlaceholder] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
+      setLoading(true);
       try {
-        const res = await apiClient.get('/dashboard');
+        const res = await apiClient.get(`/dashboard?range=${range}`);
         setSummary(res.data);
       } catch (err) {
         // Endpoint not implemented yet on the backend — show placeholder data
@@ -44,12 +54,12 @@ export default function Dashboard() {
       }
     };
     fetchSummary();
-  }, []);
+  }, [range]);
 
   if (loading || !summary) return <div className="loading-screen">Loading dashboard...</div>;
 
   const categoryData = summary.categoryBreakdown || [];
-  const trendData = summary.weeklyTrend || [];
+  const trendData = summary.trend || [];
   const totalEmission = categoryData.reduce((sum, item) => sum + (item.co2Emission || 0), 0);
 
   return (
@@ -124,11 +134,21 @@ export default function Dashboard() {
         </div>
 
         <div className="chart-card">
-          <h3>Weekly CO2e Trend (kg)</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0 }}>Emissions Trend</h3>
+            <div style={{ width: '220px' }}>
+              <CustomDropdown
+                options={RANGE_OPTIONS}
+                value={range}
+                onChange={(val) => setRange(val)}
+                placeholder="Select Range"
+              />
+            </div>
+          </div>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
+              <XAxis dataKey="label" />
               <YAxis />
               <Tooltip formatter={(value) => `${parseFloat(value).toFixed(2)} kg`} />
               <Line type="monotone" dataKey="co2Emission" stroke="#0284c7" strokeWidth={3} activeDot={{ r: 8 }} />
