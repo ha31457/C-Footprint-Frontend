@@ -653,6 +653,38 @@ body {
   font-weight: 500;
 }
 
+/* Badges for active/disabled status */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badge-active {
+  background-color: #dce8d8;
+  color: #2f6b3f;
+}
+
+.badge-disabled {
+  background-color: #fce8ea;
+  color: #b4233c;
+}
+
+.disable-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 3px 8px rgba(180, 35, 60, 0.2);
+}
+
+.disable-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
 html,
 body,
 #root {

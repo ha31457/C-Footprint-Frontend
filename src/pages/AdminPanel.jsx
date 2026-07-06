@@ -7,26 +7,61 @@ const COLORS = ['#225c3b', '#0284c7', '#769482', '#0f766e'];
 export default function AdminPanel() {
   const [usersStat, setUsersStat] = useState(null);
   const [activitiesStat, setActivitiesStat] = useState(null);
+  const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [error, setError] = useState('');
+  const [disableFeedback, setDisableFeedback] = useState('');
+
+  const fetchAdminStats = async () => {
+    try {
+      const [usersRes, activitiesRes, listRes] = await Promise.all([
+        apiClient.get('/admin/users'),
+        apiClient.get('/admin/activities'),
+        apiClient.get('/admin/users/all'),
+      ]);
+      setUsersStat(usersRes.data);
+      setActivitiesStat(activitiesRes.data);
+      setUsersList(listRes.data || []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch admin stats');
+    } finally {
+      setLoading(false);
+      setUsersLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAdminStats = async () => {
-      try {
-        const [usersRes, activitiesRes] = await Promise.all([
-          apiClient.get('/admin/users'),
-          apiClient.get('/admin/activities'),
-        ]);
-        setUsersStat(usersRes.data);
-        setActivitiesStat(activitiesRes.data);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch admin stats');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAdminStats();
   }, []);
+
+  const handleDisableUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to disable this user account? This will log them out instantly.')) {
+      return;
+    }
+    try {
+      setDisableFeedback('');
+      await apiClient.delete(`/admin/users/${userId}`);
+      setDisableFeedback('User has been successfully disabled and logged out.');
+      
+      // Update local state for user management table
+      setUsersList((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, disabled: true, enabled: false } : u))
+      );
+
+      // Update counters locally
+      setUsersStat((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          enabledUsers: Math.max(0, prev.enabledUsers - 1),
+          disabledUsers: prev.disabledUsers + 1,
+        };
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to disable user account');
+    }
+  };
 
   if (loading) return <div className="loading-screen">Loading Admin Dashboard...</div>;
 
@@ -79,7 +114,7 @@ export default function AdminPanel() {
       </section>
 
       {/* Chart Visual Breakdown */}
-      <section className="chart-grid">
+      <section className="chart-grid" style={{ marginBottom: '2.5rem' }}>
         <div className="chart-card" style={{ gridColumn: 'span 2' }}>
           <h3>Global Category Breakdown (CO2 Emissions Contribution)</h3>
           {activitiesStat?.categoryBreakdown && activitiesStat.categoryBreakdown.length > 0 ? (
@@ -114,6 +149,78 @@ export default function AdminPanel() {
             </p>
           )}
         </div>
+      </section>
+
+      {/* User Management Panel */}
+      <section className="chart-card">
+        <h3 style={{ marginBottom: '1.2rem' }}>Platform User Management</h3>
+        {disableFeedback && (
+          <div className="success-container" style={{ marginBottom: '1.5rem' }}>
+            <span>✅</span>
+            <span>{disableFeedback}</span>
+          </div>
+        )}
+        {usersLoading ? (
+          <p style={{ color: 'var(--text-light)', fontStyle: 'italic' }}>Loading registered users...</p>
+        ) : usersList.length > 0 ? (
+          <div style={{ overflowX: 'auto' }}>
+            <table className="history-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Mobile Number</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usersList.map((usr) => (
+                  <tr key={usr.id}>
+                    <td style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{usr.username}</td>
+                    <td>{usr.email}</td>
+                    <td>{usr.mobileNumber || '-'}</td>
+                    <td>{usr.age || '-'}</td>
+                    <td>{usr.gender || '-'}</td>
+                    <td>
+                      {usr.disabled ? (
+                        <span className="badge badge-disabled">Disabled</span>
+                      ) : (
+                        <span className="badge badge-active">Active</span>
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleDisableUser(usr.id)}
+                        disabled={usr.disabled}
+                        className="disable-btn"
+                        style={{
+                          padding: '0.4rem 0.9rem',
+                          fontSize: '0.8rem',
+                          borderRadius: '9999px',
+                          border: 'none',
+                          background: usr.disabled ? 'rgba(0,0,0,0.06)' : 'var(--error-color)',
+                          color: usr.disabled ? 'var(--text-light)' : 'white',
+                          cursor: usr.disabled ? 'not-allowed' : 'pointer',
+                          fontWeight: '700',
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        {usr.disabled ? 'Disabled' : 'Disable'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '1.5rem 0' }}>
+            No registered platform users found.
+          </p>
+        )}
       </section>
     </div>
   );

@@ -22,7 +22,7 @@ export default function Login() {
         navigate('/dashboard');
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Invalid username or password';
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Invalid username or password';
       const status = err.response?.status;
 
       if (
