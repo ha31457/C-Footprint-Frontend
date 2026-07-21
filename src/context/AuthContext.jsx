@@ -143,16 +143,45 @@ export function AuthProvider({ children }) {
     return response.data;
   };
 
+  const updateUser = (newData) => {
+    setUser((prev) => {
+      const updated = { ...prev, ...newData };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const loginWithGoogle = async (idToken) => {
+    console.log('[Auth] loginWithGoogle: sending POST /google');
+    const response = await axios.post(`${AUTH_BASE_URL}/google`, { idToken });
+    console.log('[Auth] loginWithGoogle raw response data:', response.data);
+
+    const data = response.data || {};
+    const token = data.accessToken || data.access_token;
+    const rt = data.refreshToken || data.refresh_token;
+    const { accessToken, access_token, refreshToken, refresh_token, ...userData } = data;
+
+    localStorage.setItem('refreshToken', rt);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setAccessToken(token);
+    setAccessTokenState(token);
+    setUser(userData);
+
+    return userData;
+  };
+
   const value = {
     user,
     accessToken,
     loading,
     login,
+    loginWithGoogle,
     signup,
     logout,
     verifyEmail,
     forgotPassword,
     resetPassword,
+    updateUser,
     isAuthenticated: !!user && !!accessToken,
   };
 

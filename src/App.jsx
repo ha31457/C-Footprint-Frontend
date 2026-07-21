@@ -1,47 +1,54 @@
-import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import Layout from './components/Layout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import LandingPage from './pages/LandingPage';
 import VerifyEmail from './pages/VerifyEmail';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import ActivityLog from './pages/ActivityLog';
 import AdminPanel from './pages/AdminPanel';
-
-function NavBar() {
-  const { isAuthenticated, user, logout } = useAuth();
-  if (!isAuthenticated) return null;
-  return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <span>🌱</span>
-        <span>EcoFootprint</span>
-      </div>
-      <div className="navbar-links">
-        {user?.role !== 'ROLE_ADMIN' && <Link to="/dashboard">Dashboard</Link>}
-        <Link to="/log-activity">Log Activity</Link>
-        {user?.role === 'ROLE_ADMIN' && <Link to="/admin/dashboard">Admin Dashboard</Link>}
-        <button onClick={logout} className="navbar-logout-btn">Log Out</button>
-      </div>
-    </nav>
-  );
-}
+import UserActivityHistory from './pages/UserActivityHistory';
+import AdminUserManagement from './pages/AdminUserManagement';
+import AdminActivityMonitoring from './pages/AdminActivityMonitoring';
+import UserProfile from './pages/UserProfile';
+import PlaceholderPage from './pages/PlaceholderPage';
+import AdminEmissionFactors from './pages/AdminEmissionFactors';
+import UserAnalytics from './pages/UserAnalytics';
+import AdminAnalytics from './pages/AdminAnalytics';
+import CommunityLeaderboard from './pages/CommunityLeaderboard';
+import Recommendations from './pages/Recommendations';
+import SustainabilityGoals from './pages/SustainabilityGoals';
 
 export default function App() {
   const { user } = useAuth();
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }, []);
+
   return (
-    <>
-      <NavBar />
+    <Layout>
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* Protected User Routes */}
         <Route
           path="/dashboard"
           element={
@@ -63,6 +70,72 @@ export default function App() {
           }
         />
         <Route
+          path="/activity-history"
+          element={
+            <ProtectedRoute>
+              <UserActivityHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <UserAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sustainability-goals"
+          element={
+            <ProtectedRoute>
+              <SustainabilityGoals />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recommendations"
+          element={
+            <ProtectedRoute>
+              <Recommendations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community-leaderboard"
+          element={
+            <ProtectedRoute>
+              <CommunityLeaderboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/badges-leaderboard"
+          element={
+            <ProtectedRoute>
+              <PlaceholderPage title="Badges & Leaderboard" icon="🏅" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <PlaceholderPage title="Settings" icon="⚙️" />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected Admin Routes */}
+        <Route
           path="/admin/dashboard"
           element={
             <AdminRoute>
@@ -70,9 +143,90 @@ export default function App() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/admin/user-management"
+          element={
+            <AdminRoute>
+              <AdminUserManagement />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/activity-monitoring"
+          element={
+            <AdminRoute>
+              <AdminActivityMonitoring />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <AdminRoute>
+              <UserProfile />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/emission-factors"
+          element={
+            <AdminRoute>
+              <AdminEmissionFactors />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/organization-management"
+          element={
+            <AdminRoute>
+              <PlaceholderPage title="Organization Management" icon="🏢" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/badge-management"
+          element={
+            <AdminRoute>
+              <PlaceholderPage title="Badge Management" icon="🏆" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/leaderboard-management"
+          element={
+            <AdminRoute>
+              <PlaceholderPage title="Leaderboard Management" icon="🏅" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <AdminRoute>
+              <PlaceholderPage title="Reports" icon="📂" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <AdminRoute>
+              <AdminAnalytics />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/system-settings"
+          element={
+            <AdminRoute>
+              <PlaceholderPage title="System Settings" icon="🛠️" />
+            </AdminRoute>
+          }
+        />
+
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="*" element={<Navigate to={user?.role === 'ROLE_ADMIN' ? "/admin/dashboard" : "/dashboard"} replace />} />
       </Routes>
-    </>
+    </Layout>
   );
 }

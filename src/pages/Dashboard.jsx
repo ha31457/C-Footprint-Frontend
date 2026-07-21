@@ -79,14 +79,23 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* KPI Stats highlight card */}
-      <section style={{ marginBottom: '2.5rem' }}>
-        <div className="chart-card" style={{ maxWidth: '360px', padding: '1.5rem 2rem' }}>
+      {/* KPI Stats highlight grid */}
+      <section style={{ marginBottom: '2.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+        <div className="chart-card" style={{ flex: 1, minWidth: '240px', padding: '1.5rem 2rem' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Today's Carbon Footprint
           </span>
-          <span style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--primary-color)', marginTop: '0.4rem', display: 'block' }}>
-            {summary.todayTotalEmission?.toFixed(2) || 0} kg CO2e
+          <span style={{ fontSize: '2.25rem', fontWeight: '850', color: 'var(--primary-color)', marginTop: '0.4rem', display: 'block' }}>
+            {(summary.todayTotalEmission ?? 0).toFixed(2)} kg CO₂e
+          </span>
+        </div>
+
+        <div className="chart-card" style={{ flex: 1, minWidth: '240px', padding: '1.5rem 2rem' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Total All-Time Emissions
+          </span>
+          <span style={{ fontSize: '2.25rem', fontWeight: '850', color: 'var(--accent-color)', marginTop: '0.4rem', display: 'block' }}>
+            {(summary.totalAllTimeEmission ?? 0).toFixed(1)} kg CO₂e
           </span>
         </div>
       </section>
@@ -156,6 +165,23 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
       </section>
+
+      {/* Personalized Recommendations */}
+      {summary.recommendations && summary.recommendations.length > 0 && (
+        <section className="chart-card" style={{ marginTop: '2rem', borderLeft: '4px solid var(--primary-color)', padding: '2rem' }}>
+          <h3 style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--primary-color)', fontSize: '1.15rem' }}>
+            <span>💡</span> Personalized Sustainability Recommendations
+          </h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {summary.recommendations.map((rec, index) => (
+              <li key={index} style={{ display: 'flex', gap: '0.8rem', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                <span>🌱</span>
+                <span>{rec}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
