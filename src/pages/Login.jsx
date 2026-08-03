@@ -105,9 +105,16 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
             {error && (
-              <div className="error-container">
-                <span>⚠️</span>
-                <span>{error}</span>
+              <div className="error-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+                {error.toLowerCase().includes('disabled') && (
+                  <div style={{ fontSize: '0.8rem', marginTop: '0.1rem', color: '#b91c1c' }}>
+                    Please <Link to="/support" style={{ color: '#b91c1c', textDecoration: 'underline', fontWeight: '700' }}>contact support</Link> for assistance.
+                  </div>
+                )}
               </div>
             )}
 

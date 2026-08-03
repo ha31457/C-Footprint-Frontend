@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LandingPage() {
   const { isAuthenticated, user } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const isAdmin = user?.role === 'ROLE_ADMIN';
 
   // Theme support for unauthenticated session
@@ -19,6 +21,79 @@ export default function LandingPage() {
       document.body.classList.remove('dark-theme');
     }
   };
+
+  // Particle Canvas Background Ref & Logic
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const resizeCanvas = () => {
+      canvas.width = canvas.parentElement.clientWidth || window.innerWidth;
+      canvas.height = canvas.parentElement.clientHeight || window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const particleCount = Math.min(Math.floor(window.innerWidth / 24), 65);
+    const particles = Array.from({ length: particleCount }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2.5 + 1.2,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      color: Math.random() > 0.4 ? '#8b5cf6' : Math.random() > 0.5 ? '#f43f5e' : '#06b6d4',
+      alpha: Math.random() * 0.45 + 0.25
+    }));
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 115) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.globalAlpha = (1 - dist / 115) * 0.18;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   // Interactive Simulator States
   const [simCategory, setSimCategory] = useState('car');
@@ -41,7 +116,27 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="landing-container">
+    <div className="landing-container" style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Particle Canvas Animation Background */}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}
+      />
+
+      {/* Floating Animated Background Blobs */}
+      <div className="animated-bg-container">
+        <div className="bg-blob bg-blob-1" />
+        <div className="bg-blob bg-blob-2" />
+        <div className="bg-blob bg-blob-3" />
+      </div>
       {/* Dynamic Header for Guest Sessions */}
       {!isAuthenticated && (
         <header
@@ -64,14 +159,14 @@ export default function LandingPage() {
           </div>
 
           <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <a href="#features" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Features</a>
-            <a href="#methodology" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Methodology</a>
+            <a href="#features" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('features', 'Features')}</a>
+            <a href="#methodology" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('methodology', 'Methodology')}</a>
             <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Sign In</Link>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Link to="/login" className="landing-btn landing-btn-primary" style={{ padding: '0.5rem 1.2rem', fontSize: '0.85rem', borderRadius: '8px' }}>
-              Get Started
+              {t('getStarted', 'Get Started')}
             </Link>
           </div>
         </header>
@@ -87,9 +182,9 @@ export default function LandingPage() {
               <span>🌱</span>
               <span>Next-Gen Carbon Intelligence</span>
             </div>
-            <h1>Measure, Manage & Lower Your Carbon Footprint</h1>
+            <h1>{t('landingTitle', "Measure, Manage & Lower Your Carbon Footprint")}</h1>
             <p>
-              EcoFootprint empowers individuals and organizations to calculate daily activity emissions, track reduction goals, analyze carbon trends, and earn green community badges in real time.
+              {t('landingSubtitle', "EcoFootprint empowers individuals and organizations to calculate daily activity emissions, track reduction goals, analyze carbon trends, and earn green community badges in real time.")}
             </p>
             
             <div className="hero-trust-list">
@@ -181,7 +276,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Counter Banner Section (Full Bleed) */}
-      <section className="landing-section-outer alt" style={{ padding: '4rem 2.5rem' }}>
+      <section className="landing-section-outer alt" style={{ padding: '4rem 1.75rem' }}>
         <div className="landing-section-inner">
           <div className="landing-stats-grid">
             <div className="landing-stat-card">
@@ -358,6 +453,7 @@ export default function LandingPage() {
             <h4>Platform</h4>
             <a href="#features">Features</a>
             <a href="#methodology">Methodology</a>
+            <Link to="/support">Support & Help</Link>
             {isAuthenticated && <Link to={isAdmin ? "/admin/dashboard" : "/dashboard"}>My Dashboard</Link>}
           </div>
 
