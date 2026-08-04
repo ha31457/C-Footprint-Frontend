@@ -182,7 +182,7 @@ export default function AdminEmissionFactors() {
   };
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <ConfirmModal
         isOpen={modalOpen}
         title={modalConfig.title}

@@ -27,7 +27,7 @@ export default function UserAnalytics() {
 
   if (error) {
     return (
-      <div className="dashboard" style={{ maxWidth: '1000px' }}>
+      <div className="dashboard" style={{ maxWidth: '1280px' }}>
         <div className="error-container" style={{ margin: '2rem 0' }}>
           <span>⚠️</span>
           <span>{error}</span>
@@ -60,7 +60,7 @@ export default function UserAnalytics() {
   const maxEmission = Math.max(...Object.values(safeCategoryEmission), 1);
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2rem' }}>
         <div>
           <h1>Activity Analytics</h1>
@@ -72,25 +72,25 @@ export default function UserAnalytics() {
 
       {/* Summary Row */}
       <section className="admin-stats-grid" style={{ marginBottom: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-        <div className="chart-card stat-card" style={{ padding: '1.2rem 1.8rem' }}>
-          <span className="stat-label" style={{ fontSize: '0.75rem' }}>Total Logs Recorded</span>
-          <span className="stat-value" style={{ fontSize: '1.8rem' }}>{totalLogs}</span>
+        <div className="chart-card stat-card" style={{ padding: '1.4rem 1.8rem', borderTop: '4px solid #6366f1', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span className="stat-label" style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>📊 Total Logs Recorded</span>
+          <span className="stat-value" style={{ fontSize: '1.95rem', fontWeight: '850', color: '#6366f1', marginTop: '0.3rem', display: 'block' }}>{totalLogs}</span>
         </div>
-        <div className="chart-card stat-card" style={{ padding: '1.2rem 1.8rem' }}>
-          <span className="stat-label" style={{ fontSize: '0.75rem' }}>All-Time Emissions</span>
-          <span className="stat-value" style={{ fontSize: '1.8rem', color: 'var(--primary-color)' }}>
-            {(totalAllTimeEmission ?? 0).toFixed(1)} kg
+        <div className="chart-card stat-card" style={{ padding: '1.4rem 1.8rem', borderTop: '4px solid #8b5cf6', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span className="stat-label" style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>🌍 All-Time Emissions</span>
+          <span className="stat-value" style={{ fontSize: '1.95rem', fontWeight: '850', color: '#8b5cf6', marginTop: '0.3rem', display: 'block' }}>
+            {(totalAllTimeEmission ?? 0).toFixed(1)} <small style={{ fontSize: '0.9rem' }}>kg</small>
           </span>
         </div>
-        <div className="chart-card stat-card" style={{ padding: '1.2rem 1.8rem' }}>
-          <span className="stat-label" style={{ fontSize: '0.75rem' }}>Most Frequent Activity</span>
-          <span className="stat-value" style={{ fontSize: '1.8rem', textTransform: 'capitalize', color: 'var(--accent-color)' }}>
+        <div className="chart-card stat-card" style={{ padding: '1.4rem 1.8rem', borderTop: '4px solid #06b6d4', background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span className="stat-label" style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>⚡ Most Frequent Activity</span>
+          <span className="stat-value" style={{ fontSize: '1.95rem', fontWeight: '850', textTransform: 'capitalize', color: '#06b6d4', marginTop: '0.3rem', display: 'block' }}>
             {mostLoggedCategory || 'None'}
           </span>
         </div>
-        <div className="chart-card stat-card" style={{ padding: '1.2rem 1.8rem' }}>
-          <span className="stat-label" style={{ fontSize: '0.75rem' }}>Highest CO₂ Source</span>
-          <span className="stat-value" style={{ fontSize: '1.8rem', textTransform: 'capitalize', color: '#b4233c' }}>
+        <div className="chart-card stat-card" style={{ padding: '1.4rem 1.8rem', borderTop: '4px solid #ec4899', background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span className="stat-label" style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>🔥 Highest CO₂ Source</span>
+          <span className="stat-value" style={{ fontSize: '1.95rem', fontWeight: '850', textTransform: 'capitalize', color: '#ec4899', marginTop: '0.3rem', display: 'block' }}>
             {highestEmissionCategory || 'None'}
           </span>
         </div>
@@ -98,7 +98,7 @@ export default function UserAnalytics() {
 
       {/* Visual Breakdowns */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
-        
+
         {/* Category Logs Share */}
         <div className="chart-card" style={{ padding: '2rem' }}>
           <h3 style={{ marginBottom: '1.5rem', fontSize: '1.15rem' }}>Log Volume by Category</h3>

@@ -27,7 +27,7 @@ export default function AdminAnalytics() {
 
   if (error) {
     return (
-      <div className="dashboard" style={{ maxWidth: '1000px' }}>
+      <div className="dashboard" style={{ maxWidth: '1280px' }}>
         <div className="error-container" style={{ margin: '2rem 0' }}>
           <span>⚠️</span>
           <span>{error}</span>
@@ -57,7 +57,7 @@ export default function AdminAnalytics() {
   const maxEmission = Math.max(...Object.values(safeCategoryEmission), 1);
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2rem' }}>
         <div>
           <h1>Platform Diagnostics & Analytics</h1>

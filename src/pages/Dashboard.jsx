@@ -3,6 +3,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, LineChart, L
 import apiClient from '../api/apiClient';
 import { useAuth } from '../context/AuthContext';
 import CustomDropdown from '../components/CustomDropdown';
+import { useLanguage } from '../context/LanguageContext';
 
 const COLORS = ['#225c3b', '#0284c7', '#769482', '#0f766e'];
 
@@ -34,6 +35,7 @@ const PLACEHOLDER_SUMMARY = {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [summary, setSummary] = useState(null);
   const [range, setRange] = useState('daily');
   const [usingPlaceholder, setUsingPlaceholder] = useState(false);
@@ -66,9 +68,9 @@ export default function Dashboard() {
     <div className="dashboard">
       <header className="dashboard-header">
         <div>
-          <h1>Welcome, {user?.username}</h1>
+          <h1>{t('welcomeBack', 'Welcome back')}, {user?.username}</h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            Here is your carbon footprint dashboard analysis
+            {t('dashboardIntro', 'Here is your carbon footprint dashboard analysis')}
           </p>
         </div>
       </header>
@@ -81,21 +83,21 @@ export default function Dashboard() {
 
       {/* KPI Stats highlight grid */}
       <section style={{ marginBottom: '2.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-        <div className="chart-card" style={{ flex: 1, minWidth: '240px', padding: '1.5rem 2rem' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Today's Carbon Footprint
+        <div className="chart-card stat-card" style={{ flex: 1, minWidth: '240px', padding: '1.6rem 2rem', borderTop: '4px solid #6366f1', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            ⚡ {t('weeklyFootprint', "Today's Carbon Footprint")}
           </span>
-          <span style={{ fontSize: '2.25rem', fontWeight: '850', color: 'var(--primary-color)', marginTop: '0.4rem', display: 'block' }}>
-            {(summary.todayTotalEmission ?? 0).toFixed(2)} kg CO₂e
+          <span style={{ fontSize: '2.35rem', fontWeight: '850', color: '#6366f1', marginTop: '0.5rem', display: 'block' }}>
+            {(summary.todayTotalEmission ?? 0).toFixed(2)} <small style={{ fontSize: '1.1rem' }}>kg CO₂e</small>
           </span>
         </div>
 
-        <div className="chart-card" style={{ flex: 1, minWidth: '240px', padding: '1.5rem 2rem' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Total All-Time Emissions
+        <div className="chart-card stat-card" style={{ flex: 1, minWidth: '240px', padding: '1.6rem 2rem', borderTop: '4px solid #8b5cf6', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, var(--surface-color) 75%)' }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            🌍 Total All-Time Emissions
           </span>
-          <span style={{ fontSize: '2.25rem', fontWeight: '850', color: 'var(--accent-color)', marginTop: '0.4rem', display: 'block' }}>
-            {(summary.totalAllTimeEmission ?? 0).toFixed(1)} kg CO₂e
+          <span style={{ fontSize: '2.35rem', fontWeight: '850', color: '#8b5cf6', marginTop: '0.5rem', display: 'block' }}>
+            {(summary.totalAllTimeEmission ?? 0).toFixed(1)} <small style={{ fontSize: '1.1rem' }}>kg CO₂e</small>
           </span>
         </div>
       </section>

@@ -205,7 +205,7 @@ export default function AdminUserManagement() {
   });
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       {/* Reusable Confirm Dialog */}
       <ConfirmModal
         isOpen={modalOpen}

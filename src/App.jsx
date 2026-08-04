@@ -25,6 +25,12 @@ import CommunityLeaderboard from './pages/CommunityLeaderboard';
 import Recommendations from './pages/Recommendations';
 import SustainabilityGoals from './pages/SustainabilityGoals';
 
+import BadgesLeaderboard from './pages/BadgesLeaderboard';
+import AdminBadgeManagement from './pages/AdminBadgeManagement';
+import AdminLeaderboardManagement from './pages/AdminLeaderboardManagement';
+import Support from './pages/Support';
+import AdminSupport from './pages/AdminSupport';
+
 export default function App() {
   const { user } = useAuth();
 
@@ -47,6 +53,7 @@ export default function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/support" element={<Support />} />
 
         {/* Protected User Routes */}
         <Route
@@ -121,7 +128,7 @@ export default function App() {
           path="/badges-leaderboard"
           element={
             <ProtectedRoute>
-              <PlaceholderPage title="Badges & Leaderboard" icon="🏅" />
+              <BadgesLeaderboard />
             </ProtectedRoute>
           }
         />
@@ -187,7 +194,7 @@ export default function App() {
           path="/admin/badge-management"
           element={
             <AdminRoute>
-              <PlaceholderPage title="Badge Management" icon="🏆" />
+              <AdminBadgeManagement />
             </AdminRoute>
           }
         />
@@ -195,7 +202,15 @@ export default function App() {
           path="/admin/leaderboard-management"
           element={
             <AdminRoute>
-              <PlaceholderPage title="Leaderboard Management" icon="🏅" />
+              <AdminLeaderboardManagement />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/support"
+          element={
+            <AdminRoute>
+              <AdminSupport />
             </AdminRoute>
           }
         />

@@ -24,7 +24,7 @@ export default function Recommendations() {
   }, []);
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2rem' }}>
         <div>
           <h1>Personalized Action Center</h1>
