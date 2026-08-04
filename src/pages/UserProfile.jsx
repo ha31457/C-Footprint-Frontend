@@ -3,9 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import apiClient from '../api/apiClient';
 import CustomDropdown from '../components/CustomDropdown';
 import { getAvatarUrl } from '../constants/avatars';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function UserProfile() {
   const { user, updateUser } = useAuth();
+  const { t } = useLanguage();
   const [profile, setProfile] = useState(user);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -110,10 +112,68 @@ export default function UserProfile() {
     }
   };
 
-  const avatarUrl = getAvatarUrl(profile?.avatar, profile?.gender, profile?.username);
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setError('');
+    setSuccess('');
+
+    // Check size limit: 1MB
+    if (file.size > 1024 * 1024) {
+      setError('Upload failed: File size exceeds the maximum limit of 1MB.');
+      return;
+    }
+
+    // Check allowed format: png, jpg, jpeg
+    const allowedExtensions = ['png', 'jpg', 'jpeg'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      setError('Upload failed: Only PNG, JPG, and JPEG images are allowed.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await apiClient.post('/users/upload-avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      // The API returns { avatarImageId, avatarUrl }
+      const updatedProfile = { ...profile, avatarUrl: res.data.avatarUrl };
+      setProfile(updatedProfile);
+      updateUser(updatedProfile);
+      setSuccess('Profile avatar photo uploaded successfully!');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to upload avatar image.');
+      console.error(err);
+    }
+  };
+
+  const handleAvatarReset = async () => {
+    setError('');
+    setSuccess('');
+    try {
+      await apiClient.put('/users/avatar', {
+        avatar: 'male-1'
+      });
+      const updatedProfile = { ...profile, avatarUrl: null, avatar: 'male-1' };
+      setProfile(updatedProfile);
+      updateUser(updatedProfile);
+      setSuccess('Profile avatar reset to preset successfully!');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to reset avatar.');
+      console.error(err);
+    }
+  };
+
+  const avatarUrl = getAvatarUrl(profile?.avatarUrl, profile?.avatar, profile?.gender, profile?.username);
 
   return (
-    <div className="dashboard" style={{ maxWidth: '900px' }}>
+    <div className="dashboard" style={{ maxWidth: '1200px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2rem' }}>
         <div>
           <h1>User Profile</h1>
@@ -161,9 +221,60 @@ export default function UserProfile() {
                 <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
                   {profile?.email} &bull; <span style={{ textTransform: 'capitalize', color: 'var(--primary-color)', fontWeight: '700' }}>{profile?.role?.replace('ROLE_', '')}</span>
                 </p>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
-                  ✨ Your profile avatar is automatically generated from your account username using DiceBear Initial-Face.
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.6rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <input
+                      type="file"
+                      id="avatar-file-input"
+                      accept=".png,.jpg,.jpeg"
+                      onChange={handleAvatarUpload}
+                      style={{ display: 'none' }}
+                    />
+                    <label
+                      htmlFor="avatar-file-input"
+                      style={{
+                        padding: '0.55rem 1.2rem',
+                        background: 'linear-gradient(135deg, var(--primary-color), #34d399)',
+                        color: '#ffffff',
+                        borderRadius: '8px',
+                        fontSize: '0.82rem',
+                        fontWeight: '750',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        transition: 'transform 0.2s'
+                      }}
+                    >
+                      📤 Upload Photo
+                    </label>
+
+                    {profile?.avatarUrl && (
+                      <button
+                        type="button"
+                        onClick={handleAvatarReset}
+                        style={{
+                          padding: '0.55rem 1.2rem',
+                          background: 'transparent',
+                          border: '1.5px solid var(--border-color)',
+                          color: 'var(--text-primary)',
+                          borderRadius: '8px',
+                          fontSize: '0.82rem',
+                          fontWeight: '750',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.4rem'
+                        }}
+                      >
+                        🗑️ Reset Photo
+                      </button>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: '600' }}>
+                    Allowed formats: <strong>PNG, JPG, JPEG</strong>. Max file size: <strong>1MB</strong>.
+                  </span>
+                </div>
               </div>
             </div>
           </section>
@@ -171,7 +282,7 @@ export default function UserProfile() {
           {/* Profile Details Card */}
           <section className="chart-card" style={{ padding: '2.2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.8rem' }}>
-              <h3 style={{ margin: 0, fontSize: '1.2rem' }}>Personal Information</h3>
+              <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{t('profilePersonalInfo', 'Personal Information')}</h3>
               {isUser && !isEditing && (
                 <button
                   type="button"

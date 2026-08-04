@@ -42,7 +42,7 @@ export default function CommunityLeaderboard() {
     : (data?.entries || data?.leaderboard || data?.rankings || data?.users || data?.leaderboardEntries || []);
 
   // Helper to ensure Initial-Face avatar is dynamically generated from username
-  const resolveAvatar = (entry) => getAvatarUrl(entry?.avatar, entry?.gender, entry?.username);
+  const resolveAvatar = (entry) => getAvatarUrl(entry?.avatarUrl, entry?.avatar, entry?.gender, entry?.username);
 
   // Extract Top 3 for the Podium
   const rank1 = entries.find((e) => e.rank === 1) || entries[0] || null;
@@ -52,16 +52,62 @@ export default function CommunityLeaderboard() {
   const top3Set = new Set([rank1, rank2, rank3].filter(Boolean));
   const restEntries = entries.filter((e) => !top3Set.has(e));
 
+  const averageEmission = data?.averageEmission ?? null;
+  const currentUserPercentile = data?.currentUserPercentile ?? null;
+
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2.5rem' }}>
         <div>
           <h1>Community Sustainability Leaderboard</h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
             Real-time carbon auditing standings across our eco community
           </p>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            padding: '0.75rem 1rem',
+            background: 'rgba(99, 102, 241, 0.08)',
+            border: '1px solid rgba(99, 102, 241, 0.15)',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+            marginTop: '0.8rem',
+            lineHeight: '1.4'
+          }}>
+            <span>💡</span>
+            <span>Rankings are calculated based on your logged activities plus an estimated baseline of 15.0 kg CO₂ for days without activity logging. Daily logs help lower your baseline footprint!</span>
+          </div>
         </div>
       </header>
+
+      {/* Community Averages & Standing Percentile */}
+      {(averageEmission !== null || currentUserPercentile !== null) && (
+        <section style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+          {averageEmission !== null && (
+            <div className="chart-card stat-card" style={{ flex: 1, minWidth: '240px', padding: '1.4rem 1.8rem', borderTop: '4px solid #8b5cf6', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, var(--surface-color) 75%)' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                👥 Community Average
+              </span>
+              <span style={{ fontSize: '2rem', fontWeight: '850', color: '#8b5cf6', marginTop: '0.3rem', display: 'block' }}>
+                {averageEmission.toFixed(1)} <small style={{ fontSize: '0.95rem' }}>kg CO₂e</small>
+              </span>
+            </div>
+          )}
+
+          {currentUserPercentile !== null && (
+            <div className="chart-card stat-card" style={{ flex: 1, minWidth: '240px', padding: '1.4rem 1.8rem', borderTop: '4px solid #f43f5e', background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, var(--surface-color) 75%)' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                🏆 Your Standing
+              </span>
+              <span style={{ fontSize: '2rem', fontWeight: '850', color: '#f43f5e', marginTop: '0.3rem', display: 'block' }}>
+                Top {currentUserPercentile.toFixed(0)}%
+              </span>
+            </div>
+          )}
+        </section>
+      )}
 
       {entries.length > 0 ? (
         <div>

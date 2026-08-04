@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import axios from 'axios';
 import { setAccessToken, setAuthHandlers } from '../api/apiClient';
 
-const AUTH_BASE_URL = 'http://localhost:8080/api/auth';
+const AUTH_BASE_URL = 'https://c-footprint-backend.onrender.com/api/auth';
 
 const AuthContext = createContext(null);
 
