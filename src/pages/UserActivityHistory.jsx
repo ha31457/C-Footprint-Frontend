@@ -30,6 +30,34 @@ export default function UserActivityHistory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [fetchingProof, setFetchingProof] = useState(false);
+
+  const handleViewProof = async (logId) => {
+    setFetchingProof(true);
+    try {
+      const response = await apiClient.get(`/activities/${logId}/proof`, {
+        responseType: 'blob'
+      });
+      const imgUrl = URL.createObjectURL(response.data);
+      setPreviewUrl(imgUrl);
+      setPreviewOpen(true);
+    } catch (err) {
+      alert('Failed to retrieve proof image or you do not have permission.');
+    } finally {
+      setFetchingProof(false);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl('');
+    }
+  };
+
   // Filters State
   const [filters, setFilters] = useState({
     category: '',
@@ -86,7 +114,7 @@ export default function UserActivityHistory() {
   const isCustomRange = filters.range === 'custom';
 
   return (
-    <div className="dashboard" style={{ maxWidth: '1000px' }}>
+    <div className="dashboard" style={{ maxWidth: '1280px' }}>
       <header className="dashboard-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1>My Activity History</h1>
@@ -205,6 +233,7 @@ export default function UserActivityHistory() {
                   <th>Activity Type</th>
                   <th>Quantity Logged</th>
                   <th>Emissions (kg CO2e)</th>
+                  <th>Proof</th>
                 </tr>
               </thead>
               <tbody>
@@ -219,6 +248,44 @@ export default function UserActivityHistory() {
                     <td style={{ fontWeight: '800', color: 'var(--primary-color)' }}>
                       {log.co2Emission?.toFixed(2)}
                     </td>
+                    <td>
+                      {log.imageProofId ? (
+                        <button
+                          onClick={() => handleViewProof(log.id)}
+                          disabled={fetchingProof}
+                          style={{
+                            padding: '0.45rem 1rem',
+                            fontSize: '0.78rem',
+                            fontWeight: '800',
+                            borderRadius: '12px',
+                            background: 'linear-gradient(135deg, var(--primary-color), #34d399)',
+                            color: '#ffffff',
+                            border: 'none',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.25)',
+                            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            letterSpacing: '0.03em',
+                            textTransform: 'uppercase'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px) scale(1.04)';
+                            e.currentTarget.style.boxShadow = '0 6px 15px rgba(16, 185, 129, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(16, 185, 129, 0.25)';
+                          }}
+                        >
+                          <span style={{ fontSize: '0.85rem' }}>🖼️</span>
+                          <span>View Proof</span>
+                        </button>
+                      ) : (
+                        <span style={{ color: 'var(--text-light)', fontSize: '0.8rem', fontStyle: 'italic' }}>No Proof</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -232,6 +299,79 @@ export default function UserActivityHistory() {
           </div>
         )}
       </section>
+
+      {previewOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.65)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+        }} onClick={handleClosePreview}>
+          <div style={{
+            background: 'var(--surface-color)',
+            borderRadius: '24px',
+            padding: '2rem',
+            maxWidth: '90%',
+            maxHeight: '90%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            position: 'relative',
+            boxShadow: 'var(--shadow-lg)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
+              <h4 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-primary)' }}>Proof Document Image</h4>
+              <button onClick={handleClosePreview} style={{
+                background: 'transparent',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: 'var(--text-secondary)'
+              }}>&times;</button>
+            </div>
+            <img src={previewUrl} alt="Proof upload preview" style={{
+              maxWidth: '100%',
+              maxHeight: '65vh',
+              borderRadius: '16px',
+              objectFit: 'contain'
+            }} />
+          </div>
+        </div>
+      )}
+
+      {fetchingProof && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(255,255,255,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <div className="loading-spinner" style={{
+              width: '24px',
+              height: '24px',
+              border: '3px solid var(--border-color)',
+              borderTop: '3px solid var(--primary-color)',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <span style={{ fontWeight: '700', color: 'var(--primary-color)' }}>Retrieving proof details...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
