@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import CustomDropdown from '../components/CustomDropdown';
+import EcoLogo from '../components/EcoLogo';
 
 export default function Signup() {
   const { signup, loginWithGoogle } = useAuth();
@@ -106,56 +107,65 @@ export default function Signup() {
   };
 
   return (
-    <div className="auth-split-container signup-mode" style={{ minHeight: '100vh' }}>
+    <div className="auth-page-wrapper">
+      <div className="auth-card signup-mode">
+        
+        {/* Illustration Panel - Left */}
+        <div className="auth-info-side">
+          <div className="auth-info-content">
+            <svg viewBox="0 0 400 400" width="100%" height="260" style={{ marginBottom: '1.5rem' }}>
+              {/* Rising Sun */}
+              <circle cx="200" cy="180" r="100" fill="rgba(255,255,255,0.06)" />
+              <circle cx="200" cy="180" r="70" fill="rgba(255,255,255,0.08)" />
+              {/* Ground hills */}
+              <path d="M -20,350 Q 120,310 260,340 Q 330,320 420,350 L 420,400 L -20,400 Z" fill="#1b4332" />
+              <path d="M 120,350 Q 260,320 420,350 L 420,400 L 120,400 Z" fill="#2d6a4f" />
+              {/* Sprout & Plants */}
+              <path d="M 70,350 Q 80,310 100,300" stroke="#52b788" strokeWidth="4" fill="none" strokeLinecap="round" />
+              <path d="M 100,300 Q 110,290 120,295 Q 110,310 100,300" fill="#52b788" />
+              <path d="M 90,320 Q 75,310 80,325 Q 90,325 90,320" fill="#52b788" />
+              
+              {/* Stylized trees (Image 2 style) */}
+              <path d="M 280,350 L 280,240" stroke="#4a3728" strokeWidth="4" strokeLinecap="round" />
+              <circle cx="280" cy="220" r="35" fill="#52b788" />
+              <circle cx="280" cy="220" r="28" fill="#74c69d" />
+              <path d="M 280,185 L 280,250" stroke="#4a3728" strokeWidth="2.5" />
+              <path d="M 280,220 L 295,205" stroke="#4a3728" strokeWidth="2" />
+              <path d="M 280,235 L 265,220" stroke="#4a3728" strokeWidth="2" />
 
-      {/* Info Half - Left */}
-      <div className="auth-split-info-half">
-        <div className="auth-split-info-content">
-          <h2>Empowering Global Climate Action</h2>
-          <p>
-            EcoFootprint is a secure, real-time auditing and activity intelligence platform designed to track daily greenhouse emissions, establish sustainability milestones, and earn green badges.
-          </p>
+              <path d="M 330,350 L 330,260" stroke="#4a3728" strokeWidth="3.5" strokeLinecap="round" />
+              <circle cx="330" cy="240" r="28" fill="#40916c" />
+              <circle cx="330" cy="240" r="22" fill="#52b788" />
+              <path d="M 330,212 L 330,265" stroke="#4a3728" strokeWidth="2" />
 
-          <div className="auth-split-info-features">
-            <div className="auth-split-info-feature-item">
-              <span className="icon">🌱</span>
-              <div>
-                <h4>Carbon Audit Logs</h4>
-                <p>Record carbon footprints across transportation, diet, and shopping with automatic GHG protocol conversions.</p>
-              </div>
-            </div>
-
-            <div className="auth-split-info-feature-item">
-              <span className="icon">📊</span>
-              <div>
-                <h4>Progress Dashboards</h4>
-                <p>Monitor weekly, monthly, and yearly trends via interactive charts and comparative timelines.</p>
-              </div>
-            </div>
-
-            <div className="auth-split-info-feature-item">
-              <span className="icon">🏅</span>
-              <div>
-                <h4>Gamified Milestones</h4>
-                <p>Unlock certified badges and climb community leaderboards by saving ecological impacts.</p>
-              </div>
-            </div>
+              {/* Recycling Bin / Barrel (Image 2 style) */}
+              <rect x="180" y="270" width="40" height="70" rx="4" fill="#52b788" />
+              <ellipse cx="200" cy="270" rx="20" ry="6" fill="#74c69d" />
+              <line x1="180" y1="295" x2="220" y2="295" stroke="#1b4332" strokeWidth="2" />
+              <line x1="180" y1="320" x2="220" y2="320" stroke="#1b4332" strokeWidth="2" />
+              {/* Green Recycle Symbol on Bin */}
+              <circle cx="200" cy="308" r="7" fill="none" stroke="#ffffff" strokeWidth="2" />
+              
+              {/* Person Outline/Shape planting/working */}
+              <circle cx="120" cy="240" r="10" fill="#ffffff" />
+              <path d="M 120,250 Q 120,290 140,300 M 120,260 L 105,275 L 90,295 M 120,260 L 140,270 L 155,290" stroke="#ffffff" strokeWidth="4" fill="none" strokeLinecap="round" />
+            </svg>
+            <h2>Let us go green to get our planet clean</h2>
+            <p>
+              Join thousands of global citizens today auditing carbon counts, logging daily savings, and reducing ecological footprints.
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* Form Half - Right */}
-      <div className="auth-split-form-half" style={{ padding: '2rem 1.5rem' }}>
-        <div className="auth-form" style={{ maxWidth: '520px', width: '100%', padding: '1.6rem 2.2rem' }}>
-          
-          {/* Logo Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '1.8rem' }}>🌱</span>
+        {/* Form Panel - Right */}
+        <div className="auth-form-side">
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center', marginBottom: '1.2rem', textDecoration: 'none' }}>
+            <EcoLogo size={34} />
             <span style={{ fontWeight: '850', fontSize: '1.4rem', color: 'var(--primary-color)' }}>EcoFootprint</span>
-          </div>
+          </Link>
 
-          <h2>Create Account</h2>
-          <p className="subtitle" style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: '-0.8rem', marginBottom: '1.2rem', fontSize: '0.85rem' }}>
+          <h2 style={{ textAlign: 'center', fontSize: '1.6rem', fontWeight: '800', margin: '0 0 0.4rem 0' }}>Create Account</h2>
+          <p className="subtitle" style={{ textAlign: 'center', color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.85rem', fontWeight: '600' }}>
             Join the platform to audit carbon footprints
           </p>
 
@@ -173,8 +183,8 @@ export default function Signup() {
               </div>
             )}
 
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <label>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.78rem', fontWeight: '750', color: 'var(--text-secondary)' }}>
                 Username
                 <input
                   type="text"
@@ -185,10 +195,20 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="e.g. jane_doe"
                   required
+                  style={{
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-color)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: '600'
+                  }}
                 />
               </label>
 
-              <label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.78rem', fontWeight: '750', color: 'var(--text-secondary)' }}>
                 Email
                 <input
                   type="email"
@@ -198,12 +218,22 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="e.g. jane@mail.com"
                   required
+                  style={{
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-color)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: '600'
+                  }}
                 />
               </label>
             </div>
 
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <label>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.78rem', fontWeight: '750', color: 'var(--text-secondary)' }}>
                 Password
                 <input
                   type="password"
@@ -213,10 +243,20 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="At least 6 chars"
                   required
+                  style={{
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-color)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: '600'
+                  }}
                 />
               </label>
 
-              <label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.78rem', fontWeight: '750', color: 'var(--text-secondary)' }}>
                 Mobile Number
                 <input
                   type="text"
@@ -225,12 +265,22 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="e.g. +15551234567"
                   required
+                  style={{
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-color)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: '600'
+                  }}
                 />
               </label>
             </div>
 
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <label>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.78rem', fontWeight: '750', color: 'var(--text-secondary)' }}>
                 Age
                 <input
                   type="number"
@@ -241,6 +291,16 @@ export default function Signup() {
                   onChange={handleChange}
                   placeholder="28"
                   required
+                  style={{
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-color)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: '600'
+                  }}
                 />
               </label>
 
@@ -257,19 +317,38 @@ export default function Signup() {
               />
             </div>
 
-            <button type="submit" className="btn-submit" disabled={submitting || success} style={{ marginTop: '0.5rem' }}>
+            <button
+              type="submit"
+              className="btn-submit"
+              disabled={submitting || success}
+              style={{
+                padding: '0.8rem',
+                fontSize: '0.92rem',
+                fontWeight: '800',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, var(--primary-color), #34d399)',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)',
+                marginTop: '0.5rem'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 15px rgba(16, 185, 129, 0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.2)'; }}
+            >
               {submitting ? 'Creating account...' : 'Sign Up'}
             </button>
 
             {/* Google Sign-In Option */}
-            <div style={{ margin: '1.2rem 0', textAlign: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', margin: '0.8rem 0' }}>
+            <div style={{ margin: '0.4rem 0 0 0', textAlign: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', margin: '0.6rem 0' }}>
                 <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
-                <span style={{ padding: '0 0.8rem', fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: '700' }}>OR</span>
+                <span style={{ padding: '0 0.8rem', fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: '800' }}>OR SIGNUP WITH</span>
                 <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '0.8rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '0.4rem' }}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => setError('Google Sign-In Failed')}
@@ -279,17 +358,16 @@ export default function Signup() {
               </div>
             </div>
 
-            <p style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.5rem', margin: 0 }}>
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.8rem', fontWeight: '600' }}>
               Already have an account?{' '}
               <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: '800', textDecoration: 'none' }}>
                 Sign In
               </Link>
             </p>
           </form>
-
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }

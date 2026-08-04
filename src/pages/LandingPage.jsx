@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import EcoLogo from '../components/EcoLogo';
 
 export default function LandingPage() {
   const { isAuthenticated, user } = useAuth();
@@ -137,6 +138,7 @@ export default function LandingPage() {
         <div className="bg-blob bg-blob-2" />
         <div className="bg-blob bg-blob-3" />
       </div>
+
       {/* Dynamic Header for Guest Sessions */}
       {!isAuthenticated && (
         <header
@@ -145,63 +147,47 @@ export default function LandingPage() {
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '1.2rem 2.5rem',
-            borderBottom: '1px solid var(--border-color)',
-            background: 'var(--surface-color)',
-            position: 'sticky',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(10, 25, 15, 0.55)',
+            backdropFilter: 'blur(12px)',
+            position: 'fixed',
+            width: '100%',
             top: 0,
+            left: 0,
             zIndex: 100,
-            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.6rem' }}>🌱</span>
-            <span style={{ fontWeight: '800', fontSize: '1.3rem', color: 'var(--primary-color)' }}>EcoFootprint</span>
+            <EcoLogo size={32} />
+            <span style={{ fontWeight: '800', fontSize: '1.3rem', color: '#ffffff' }}>EcoFootprint</span>
           </div>
 
           <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <a href="#features" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('features', 'Features')}</a>
-            <a href="#methodology" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('methodology', 'Methodology')}</a>
-            <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Sign In</Link>
+            <a href="#features" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('features', 'Features')}</a>
+            <a href="#methodology" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('methodology', 'Methodology')}</a>
+            <Link to="/login" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Sign In</Link>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link to="/login" className="landing-btn landing-btn-primary" style={{ padding: '0.5rem 1.2rem', fontSize: '0.85rem', borderRadius: '8px' }}>
+            <Link to="/login" className="landing-btn landing-btn-primary" style={{ padding: '0.45rem 1.1rem', fontSize: '0.82rem', borderRadius: '20px' }}>
               {t('getStarted', 'Get Started')}
             </Link>
           </div>
         </header>
       )}
 
-      {/* Split Hero Section */}
+      {/* Hero Section */}
       <section className="landing-hero-wrapper">
         <div className="landing-hero-split">
-          
-          {/* Left Column: Hero Content */}
           <div className="landing-hero-left">
             <div className="hero-pill-badge">
               <span>🌱</span>
-              <span>Next-Gen Carbon Intelligence</span>
+              <span>Next-Gen Carbon Auditing</span>
             </div>
-            <h1>{t('landingTitle', "Measure, Manage & Lower Your Carbon Footprint")}</h1>
+            <h1>Auditing Footprints for a Greener Tomorrow</h1>
             <p>
-              {t('landingSubtitle', "EcoFootprint empowers individuals and organizations to calculate daily activity emissions, track reduction goals, analyze carbon trends, and earn green community badges in real time.")}
+              EcoFootprint empowers individuals and corporate teams to calculate daily activity emissions, track reduction goals, analyze carbon trends, and earn green community badges in real time.
             </p>
-            
-            <div className="hero-trust-list">
-              <div className="hero-trust-item">
-                <span className="hero-trust-icon">✓</span>
-                <span>Automated CO₂e Factors</span>
-              </div>
-              <div className="hero-trust-item">
-                <span className="hero-trust-icon">✓</span>
-                <span>Personalized Eco Tips</span>
-              </div>
-              <div className="hero-trust-item">
-                <span className="hero-trust-icon">✓</span>
-                <span>Community Leaderboards</span>
-              </div>
-            </div>
-
             <div className="landing-hero-cta">
               {isAuthenticated ? (
                 <Link to={isAdmin ? "/admin/dashboard" : "/dashboard"} className="landing-btn landing-btn-primary">
@@ -219,134 +205,182 @@ export default function LandingPage() {
               )}
             </div>
           </div>
+        </div>
 
-          {/* Right Column: Animated Eco Dashboard Visual */}
-          <div className="hero-animation-container">
-            {/* Top Right Floating Activity Pill */}
-            <div className="hero-floating-pill pill-top-right">
-              <span style={{ fontSize: '1.2rem' }}>⚡</span>
-              <div>
-                <div style={{ color: 'var(--text-primary)' }}>Solar Power Logged</div>
-                <div style={{ color: 'var(--primary-color)', fontSize: '0.75rem', fontWeight: '800' }}>-12.5 kg CO₂e saved</div>
-              </div>
+        {/* Stats Row overlay at bottom of Hero */}
+        <div className="landing-hero-stats-row">
+          <div className="stats-inner">
+            <div className="stat-item">
+              <span className="stat-val">15+</span>
+              <span className="stat-lbl">Verified Factors</span>
             </div>
-
-            {/* Main Animated Central Card */}
-            <div className="hero-main-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-                <div style={{ fontWeight: '800', fontSize: '0.95rem', color: 'var(--text-primary)' }}>Live Audit Monitor</div>
-                <span style={{ fontSize: '0.75rem', background: 'var(--primary-light)', color: 'var(--primary-color)', padding: '0.2rem 0.6rem', borderRadius: '999px', fontWeight: '800' }}>
-                  ● Active
-                </span>
-              </div>
-
-              {/* Pulsing Carbon Gauge Visual */}
-              <div className="hero-gauge-wrapper">
-                <div className="hero-gauge-ring">
-                  <span className="hero-gauge-value">-34.8%</span>
-                  <span className="hero-gauge-label">Footprint Cut</span>
-                </div>
-              </div>
-
-              {/* Mini Activity Row */}
-              <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 0.8rem', background: 'var(--bg-color)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: '700' }}>
-                  <span>🚗 Electric Commute</span>
-                  <span style={{ color: 'var(--primary-color)' }}>0.15 kg/km</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 0.8rem', background: 'var(--bg-color)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: '700' }}>
-                  <span>♻️ Recycling Audited</span>
-                  <span style={{ color: 'var(--primary-color)' }}>-4.80 kg CO₂</span>
-                </div>
-              </div>
+            <div className="stat-item">
+              <span className="stat-val">12,000+</span>
+              <span className="stat-lbl">Active Heroes</span>
             </div>
-
-            {/* Bottom Left Floating Achievement Pill */}
-            <div className="hero-floating-pill pill-bottom-left">
-              <span style={{ fontSize: '1.3rem' }}>🏆</span>
-              <div>
-                <div style={{ color: 'var(--text-primary)' }}>Badge Unlocked</div>
-                <div style={{ color: 'var(--accent-color)', fontSize: '0.75rem', fontWeight: '800' }}>Carbon Champion</div>
-              </div>
+            <div className="stat-item">
+              <span className="stat-val">50+</span>
+              <span className="stat-lbl">Green Badges</span>
             </div>
-
+            <div className="stat-item">
+              <span className="stat-val">34.8%</span>
+              <span className="stat-lbl">Avg Reduction</span>
+            </div>
           </div>
-
         </div>
       </section>
 
-      {/* Stats Counter Banner Section (Full Bleed) */}
-      <section className="landing-section-outer alt" style={{ padding: '4rem 1.75rem' }}>
+      {/* Split Section: Rooted in science... */}
+      <section className="landing-section-outer" style={{ borderBottom: '1px solid var(--border-color)' }}>
         <div className="landing-section-inner">
-          <div className="landing-stats-grid">
-            <div className="landing-stat-card">
-              <span className="landing-stat-number">142,580+</span>
-              <span className="landing-stat-desc">Kgs CO2e Logged & Audited</span>
+          <div className="split-content-container">
+            <div className="split-left-pane">
+              <h2>
+                Rooted in Science,<br />
+                <span>Growing with Innovation.</span>
+              </h2>
+              <div className="split-left-grid">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop" alt="Eco landscape" />
+                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=600&auto=format&fit=crop" alt="Renewable energy" />
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Forest" />
+              </div>
             </div>
-            <div className="landing-stat-card">
-              <span className="landing-stat-number">9,840+</span>
-              <span className="landing-stat-desc">Carbon Logs Filed</span>
-            </div>
-            <div className="landing-stat-card">
-              <span className="landing-stat-number">1,250+</span>
-              <span className="landing-stat-desc">Active Climate Heroes</span>
-            </div>
-            <div className="landing-stat-card">
-              <span className="landing-stat-number">34.8%</span>
-              <span className="landing-stat-desc">Avg Carbon Reduction</span>
+            <div className="split-right-pane">
+              <p>
+                At EcoFootprint, we are passionate about nurturing the planet and the people who depend on it. With verified emissions factors and a vision for sustainable living, we bridge traditional environmental practices with modern technologies to create a thriving ecological future.
+              </p>
+              <p>
+                Our auditing system conforms to dynamic carbon modeling rules, converting everyday data into exact CO₂e equivalents so you can make informed, impact-driven decisions.
+              </p>
+              <div className="slider-controls">
+                <button className="slider-btn">◀</button>
+                <div className="slider-progress-bar">
+                  <div className="slider-progress-fill" style={{ width: '60%' }} />
+                </div>
+                <button className="slider-btn">▶</button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Grid Section */}
-      <section id="features" className="landing-section-outer">
+      {/* What We Offer Grid Section */}
+      <section id="features" className="landing-section-outer" style={{ background: 'var(--sidebar-bg)' }}>
         <div className="landing-section-inner">
           <div className="landing-section-header">
-            <h2>Everything you need to drive sustainability</h2>
-            <p>
-              An all-in-one suite to track carbon logs, visualize daily trends, reward positive contributions, and inspect platform analytics.
-            </p>
+            <h2>What We Offer</h2>
+            <p>Providing sustainable solutions to modern carbon auditing needs.</p>
           </div>
 
           <div className="landing-features-grid">
             <div className="landing-feature-card">
               <span className="landing-feature-icon">✏️</span>
-              <h3>Carbon Logging & Calculators</h3>
+              <h3>Carbon Auditing</h3>
               <p>
-                Log your transportation trips, home utilities, diet choices, and shopping activities. Calculations dynamically apply standard carbon conversion weights.
+                Record your footprints across travel, utilities, shopping, and diet. Computations apply verified carbon conversion coefficients.
               </p>
             </div>
 
             <div className="landing-feature-card">
               <span className="landing-feature-icon">📊</span>
-              <h3>Insightful Dashboard Trends</h3>
+              <h3>Interactive Trends</h3>
               <p>
-                Access interactive weekly, monthly, and yearly line and pie charts that break down emissions by activity type and highlight your progress over time.
+                Access dynamic charts and analytics that break down carbon counts by category, showing logs over weekly or monthly timelines.
               </p>
             </div>
 
             <div className="landing-feature-card">
               <span className="landing-feature-icon">🏅</span>
-              <h3>Badges & Milestones</h3>
+              <h3>Eco Achievements</h3>
               <p>
                 Earn gamified carbon-conscious badges and check leaderboards to see how your ecological savings stack up against the rest of the community.
               </p>
             </div>
+          </div>
 
-            <div className="landing-feature-card">
-              <span className="landing-feature-icon">🛡️</span>
-              <h3>Platform Diagnostic Auditing</h3>
-              <p>
-                Authorized administrators can audit platform-wide carbon registries, monitor daily logs with filters, manage active accounts, and edit emissions factors.
-              </p>
+          <div className="feature-view-more-row">
+            <a href="#methodology" className="landing-btn landing-btn-primary">
+              View All Features &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Certified Badges Banners Section (Our Fresh Produce layout) */}
+      <section className="landing-section-outer">
+        <div className="landing-section-inner">
+          <div className="landing-section-header" style={{ marginBottom: '3rem' }}>
+            <h2>Certified Milestones</h2>
+            <p>Earn high-status accolades as you reduce emissions and save carbon counts.</p>
+          </div>
+
+          <div className="pillars-grid">
+            <div className="pillar-card">
+              <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=600&auto=format&fit=crop" alt="Eco Commuter" />
+              <div className="pillar-overlay">
+                <h4>Eco Commuter</h4>
+                <p>Awarded to users keeping transportation emissions below target weekly thresholds.</p>
+              </div>
+            </div>
+
+            <div className="pillar-card">
+              <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop" alt="Renewable Pioneer" />
+              <div className="pillar-overlay">
+                <h4>Renewable Pioneer</h4>
+                <p>Awarded to users registering green utilities and low-energy appliances.</p>
+              </div>
+            </div>
+
+            <div className="pillar-card">
+              <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop" alt="Forest Guardian" />
+              <div className="pillar-overlay">
+                <h4>Forest Guardian</h4>
+                <p>Awarded to users offsetting cumulative carbon records through certified plantations.</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Methodology & Interactive Calculator Section (Full Bleed) */}
-      <section id="methodology" className="landing-section-outer alt">
+      {/* Numbered Techniques Section (Water saving techniques layout) */}
+      <section className="landing-section-outer" style={{ background: 'var(--sidebar-bg)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+        <div className="landing-section-inner">
+          <div className="tech-split-container">
+            <div className="tech-left-banner">
+              <img src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?q=80&w=600&auto=format&fit=crop" alt="Green foliage" />
+            </div>
+            
+            <div className="tech-right-list">
+              <div className="tech-item">
+                <span className="tech-number">01</span>
+                <div className="tech-text-block">
+                  <h4>Carbon Audit Logs</h4>
+                  <p>Submit verified proof images and log daily carbon emission events compliant with international GHG protocol metrics.</p>
+                </div>
+              </div>
+
+              <div className="tech-item">
+                <span className="tech-number">02</span>
+                <div className="tech-text-block">
+                  <h4>Sustainability Targets</h4>
+                  <p>Establish personalized reduction goals and follow progress with clear visual indicators and weekly feedback logs.</p>
+                </div>
+              </div>
+
+              <div className="tech-item">
+                <span className="tech-number">03</span>
+                <div className="tech-text-block">
+                  <h4>AI Chatbot Assistant</h4>
+                  <p>Engage in real-time, context-aware dialogues with EcoAssistant to audit habits and discover carbon budget recommendations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Methodology Section & Live Simulator */}
+      <section id="methodology" className="landing-section-outer">
         <div className="landing-section-inner">
           <div className="landing-methodology">
             <h3>Our Calculation Methodology</h3>
