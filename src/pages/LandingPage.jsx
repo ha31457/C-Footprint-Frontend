@@ -141,35 +141,20 @@ export default function LandingPage() {
 
       {/* Dynamic Header for Guest Sessions */}
       {!isAuthenticated && (
-        <header
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '1.2rem 2.5rem',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(10, 25, 15, 0.55)',
-            backdropFilter: 'blur(12px)',
-            position: 'fixed',
-            width: '100%',
-            top: 0,
-            left: 0,
-            zIndex: 100,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <header className="landing-header">
+          <div className="landing-header-logo">
             <EcoLogo size={32} />
-            <span style={{ fontWeight: '800', fontSize: '1.3rem', color: '#ffffff' }}>EcoFootprint</span>
+            <span>EcoFootprint</span>
           </div>
 
-          <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <a href="#features" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('features', 'Features')}</a>
-            <a href="#methodology" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>{t('methodology', 'Methodology')}</a>
-            <Link to="/login" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Sign In</Link>
+          <nav>
+            <a href="#features">{t('features', 'Features')}</a>
+            <a href="#methodology">{t('methodology', 'Methodology')}</a>
+            <Link to="/login">Sign In</Link>
           </nav>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link to="/login" className="landing-btn landing-btn-primary" style={{ padding: '0.45rem 1.1rem', fontSize: '0.82rem', borderRadius: '20px' }}>
+          <div className="landing-header-cta">
+            <Link to="/login" className="landing-btn landing-btn-primary">
               {t('getStarted', 'Get Started')}
             </Link>
           </div>

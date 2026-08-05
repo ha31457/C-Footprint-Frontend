@@ -428,11 +428,23 @@ body {
   gap: 1rem;
 }
 
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Dashboard Styles */
 .dashboard {
   padding: 3rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1.5rem 1rem;
+  }
 }
 
 .dashboard-header {
@@ -447,6 +459,34 @@ body {
   border-radius: 24px;
   box-shadow: var(--shadow-md);
   border: 1px solid rgba(34, 92, 59, 0.08);
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+  }
+  
+  .dashboard-header div {
+    text-align: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.6rem !important;
+  }
+
+  .dashboard-header button,
+  .dashboard-header .navbar-logout-btn,
+  .dashboard-header a {
+    align-self: center;
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 .dashboard-header h1 {
@@ -478,13 +518,14 @@ body {
 
 .chart-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2.5rem;
 }
 
 @media (max-width: 600px) {
   .chart-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -499,6 +540,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .chart-card {
+    padding: 1.25rem !important;
+    border-radius: 16px;
+    gap: 1rem;
+  }
 }
 
 .chart-card h3 {
@@ -1020,6 +1069,37 @@ body {
   box-shadow: 0 4px 10px rgba(34, 92, 59, 0.15);
 }
 
+@media (max-width: 768px) {
+  .app-navbar {
+    padding: 0.8rem 1rem;
+  }
+  .app-logo span {
+    font-size: 1.2rem;
+  }
+  .navbar-controls {
+    gap: 0.75rem;
+  }
+  .navbar-search-form {
+    display: none !important; /* Hide admin search bar on tablet/mobile */
+  }
+  .navbar-profile-link span {
+    display: none !important; /* Hide profile text label, show only avatar img */
+  }
+  .navbar-logout-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-logo span {
+    display: none !important; /* Hide text on small mobiles, keeping only the EcoLogo icon */
+  }
+  .navbar-logout-btn {
+    display: none !important; /* Hide logout button on narrow mobile screens */
+  }
+}
+
 .main-wrapper {
   display: flex;
   flex: 1;
@@ -1436,6 +1516,76 @@ label select,
 }
 
 /* ===== Landing Page Styles ===== */
+/* Guest Header for Landing Page */
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-color);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.landing-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.landing-header-logo span {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+
+.landing-header nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.landing-header nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.landing-header nav a:hover {
+  color: var(--primary-color);
+}
+
+.landing-header-cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.landing-header .landing-btn-primary {
+  padding: 0.45rem 1.1rem !important;
+  font-size: 0.85rem !important;
+  border-radius: 20px !important;
+}
+
+@media (max-width: 768px) {
+  .landing-header {
+    padding: 0.8rem 1.2rem;
+  }
+  .landing-header nav {
+    display: none; /* Hide navigation links on mobile to avoid overlap */
+  }
+}
+
 .landing-container {
   display: flex;
   flex-direction: column;
@@ -1637,6 +1787,23 @@ body.dark-theme .landing-hero-wrapper::before {
   border-right: none;
 }
 
+@media (max-width: 768px) {
+  .landing-hero-stats-row .stats-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  .stat-item {
+    border-right: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero-stats-row .stats-inner {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
+
 .stat-val {
   font-size: 2.4rem;
   font-weight: 850;
@@ -1690,6 +1857,18 @@ body.dark-theme .landing-hero-wrapper::before {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .split-left-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .split-left-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .split-left-grid img {

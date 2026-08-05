@@ -117,7 +117,7 @@ export default function AdminBadgeManagement() {
 
   return (
     <div className="dashboard" style={{ maxWidth: '1350px' }}>
-      <header className="dashboard-header" style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="dashboard-header" style={{ marginBottom: '2.5rem' }}>
         <div>
           <h1>Badge definitions Management</h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.2rem' }}>Configure rules, labels, and assets for user achievements</p>
