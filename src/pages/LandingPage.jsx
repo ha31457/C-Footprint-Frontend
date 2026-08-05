@@ -179,6 +179,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="landing-hero-wrapper">
         <div className="landing-hero-split">
+          {/* Left Column: Text Content */}
           <div className="landing-hero-left">
             <div className="hero-pill-badge">
               <span>🌱</span>
@@ -204,6 +205,32 @@ export default function LandingPage() {
                 </>
               )}
             </div>
+          </div>
+
+          {/* Right Column: 3D perspective dashboard mockup */}
+          <div className="landing-hero-right">
+            <img 
+              src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" 
+              alt="Carbon Auditing Dashboard Monitor" 
+              style={{
+                width: '100%',
+                maxWidth: '480px',
+                borderRadius: '24px',
+                boxShadow: '0 20px 45px rgba(0,0,0,0.22)',
+                border: '3px solid rgba(255,255,255,0.15)',
+                transform: 'perspective(800px) rotateY(-15deg) rotateX(10deg)',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.03)';
+                e.currentTarget.style.boxShadow = '0 25px 55px rgba(0,0,0,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'perspective(800px) rotateY(-15deg) rotateX(10deg)';
+                e.currentTarget.style.boxShadow = '0 20px 45px rgba(0,0,0,0.22)';
+              }}
+            />
           </div>
         </div>
 

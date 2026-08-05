@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Analytics } from '@vercel/analytics/react';
+// import { Analytics } from '@vercel/analytics/react';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <Layout>
-      <Analytics />
+      {/* <Analytics /> */}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
