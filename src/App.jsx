@@ -18,6 +18,8 @@ import UserActivityHistory from './pages/UserActivityHistory';
 import AdminUserManagement from './pages/AdminUserManagement';
 import AdminActivityMonitoring from './pages/AdminActivityMonitoring';
 import UserProfile from './pages/UserProfile';
+import AdminSystemSettings from './pages/AdminSystemSettings';
+import AdminReports from './pages/AdminReports';
 import PlaceholderPage from './pages/PlaceholderPage';
 import AdminEmissionFactors from './pages/AdminEmissionFactors';
 import UserAnalytics from './pages/UserAnalytics';
@@ -220,7 +222,7 @@ export default function App() {
           path="/admin/reports"
           element={
             <AdminRoute>
-              <PlaceholderPage title="Reports" icon="📂" />
+              <AdminReports />
             </AdminRoute>
           }
         />
@@ -236,7 +238,7 @@ export default function App() {
           path="/admin/system-settings"
           element={
             <AdminRoute>
-              <PlaceholderPage title="System Settings" icon="🛠️" />
+              <AdminSystemSettings />
             </AdminRoute>
           }
         />

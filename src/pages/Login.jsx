@@ -5,7 +5,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import EcoLogo from '../components/EcoLogo';
 
 export default function Login() {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, settings } = useAuth();
   const navigate = useNavigate();
 
   // Theme Toggler for Guest View
@@ -194,22 +194,24 @@ export default function Login() {
             </button>
 
             {/* Google Sign-In Option */}
-            <div style={{ margin: '0.5rem 0 0 0', textAlign: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', margin: '0.8rem 0' }}>
-                <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
-                <span style={{ padding: '0 0.8rem', fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: '800' }}>OR LOGIN WITH</span>
-                <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
-              </div>
+            {settings?.google_signin_enabled !== false && (
+              <div style={{ margin: '0.5rem 0 0 0', textAlign: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', margin: '0.8rem 0' }}>
+                  <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
+                  <span style={{ padding: '0 0.8rem', fontSize: '0.78rem', color: 'var(--text-light)', fontWeight: '800' }}>OR LOGIN WITH</span>
+                  <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }} />
+                </div>
 
-              <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '0.5rem' }}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => setError('Google Sign-In Failed')}
-                  shape="pill"
-                  theme="outline"
-                />
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '0.5rem' }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => setError('Google Sign-In Failed')}
+                    shape="pill"
+                    theme="outline"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             <p style={{ textAlign: 'center', fontSize: '0.88rem', color: 'var(--text-secondary)', marginTop: '1.2rem', fontWeight: '600' }}>
               New to EcoFootprint?{' '}
