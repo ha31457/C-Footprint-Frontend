@@ -15,6 +15,23 @@ export function AuthProvider({ children }) {
   });
   const [accessToken, setAccessTokenState] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState({
+    google_signin_enabled: true,
+    leaderboard_enabled: true,
+    badges_enabled: true
+  });
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const SETTINGS_URL = AUTH_BASE_URL.replace('/auth', '/settings');
+      const response = await axios.get(SETTINGS_URL);
+      if (response.data) {
+        setSettings(response.data);
+      }
+    } catch (err) {
+      console.error('[Auth] Failed to fetch system settings:', err);
+    }
+  }, []);
 
   const logout = useCallback(async () => {
     const rt = localStorage.getItem('refreshToken');
@@ -96,6 +113,10 @@ export function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
   const login = async (usernameOrEmail, password) => {
     console.log('[Auth] login: starting for', usernameOrEmail);
     const response = await axios.post(`${AUTH_BASE_URL}/login`, { usernameOrEmail, password });
@@ -174,6 +195,9 @@ export function AuthProvider({ children }) {
     user,
     accessToken,
     loading,
+    settings,
+    refreshSettings: fetchSettings,
+    updateSettingsState: setSettings,
     login,
     loginWithGoogle,
     signup,

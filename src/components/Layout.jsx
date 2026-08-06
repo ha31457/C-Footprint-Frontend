@@ -119,7 +119,7 @@ const languageOptions = [
 ];
 
 export default function Layout({ children }) {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, settings } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -418,12 +418,16 @@ export default function Layout({ children }) {
                 <Link to="/admin/organization-management" className={`sidebar-item ${location.pathname === '/admin/organization-management' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">🏢</span> <span className="sidebar-text">{t('organizationManagement', 'Organization Management')}</span>
                 </Link>
-                <Link to="/admin/badge-management" className={`sidebar-item ${location.pathname === '/admin/badge-management' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">🏆</span> <span className="sidebar-text">{t('badgeManagement', 'Badge Management')}</span>
-                </Link>
-                <Link to="/admin/leaderboard-management" className={`sidebar-item ${location.pathname === '/admin/leaderboard-management' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">🏅</span> <span className="sidebar-text">{t('leaderboardManagement', 'Leaderboard Management')}</span>
-                </Link>
+                {settings?.badges_enabled !== false && (
+                  <Link to="/admin/badge-management" className={`sidebar-item ${location.pathname === '/admin/badge-management' ? 'active' : ''}`}>
+                    <span className="notranslate" translate="no">🏆</span> <span className="sidebar-text">{t('badgeManagement', 'Badge Management')}</span>
+                  </Link>
+                )}
+                {settings?.leaderboard_enabled !== false && (
+                  <Link to="/admin/leaderboard-management" className={`sidebar-item ${location.pathname === '/admin/leaderboard-management' ? 'active' : ''}`}>
+                    <span className="notranslate" translate="no">🏅</span> <span className="sidebar-text">{t('leaderboardManagement', 'Leaderboard Management')}</span>
+                  </Link>
+                )}
                 <Link to="/admin/reports" className={`sidebar-item ${location.pathname === '/admin/reports' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">📂</span> <span className="sidebar-text">{t('reports', 'Reports')}</span>
                 </Link>
@@ -455,12 +459,16 @@ export default function Layout({ children }) {
                 <Link to="/recommendations" className={`sidebar-item ${location.pathname === '/recommendations' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">💡</span> <span className="sidebar-text">{t('recommendations', 'Recommendations')}</span>
                 </Link>
-                <Link to="/community-leaderboard" className={`sidebar-item ${location.pathname === '/community-leaderboard' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">👥</span> <span className="sidebar-text">{t('communityLeaderboard', 'Community Leaderboard')}</span>
-                </Link>
-                <Link to="/badges-leaderboard" className={`sidebar-item ${location.pathname === '/badges-leaderboard' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">🏅</span> <span className="sidebar-text">{t('badgesLeaderboard', 'Badges & Leaderboard')}</span>
-                </Link>
+                {settings?.leaderboard_enabled !== false && (
+                  <Link to="/community-leaderboard" className={`sidebar-item ${location.pathname === '/community-leaderboard' ? 'active' : ''}`}>
+                    <span className="notranslate" translate="no">👥</span> <span className="sidebar-text">{t('communityLeaderboard', 'Community Leaderboard')}</span>
+                  </Link>
+                )}
+                {settings?.badges_enabled !== false && (
+                  <Link to="/badges-leaderboard" className={`sidebar-item ${location.pathname === '/badges-leaderboard' ? 'active' : ''}`}>
+                    <span className="notranslate" translate="no">🏅</span> <span className="sidebar-text">{t('badgesLeaderboard', 'Badges & Leaderboard')}</span>
+                  </Link>
+                )}
                 <Link to="/activity-history" className={`sidebar-item ${location.pathname === '/activity-history' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">📜</span> <span className="sidebar-text">{t('activityHistory', 'My Activity History')}</span>
                 </Link>
