@@ -415,9 +415,7 @@ export default function Layout({ children }) {
                 <Link to="/admin/activity-monitoring" className={`sidebar-item ${location.pathname === '/admin/activity-monitoring' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">🕵️‍♂️</span> <span className="sidebar-text">{t('activityMonitoring', 'Activity Monitoring')}</span>
                 </Link>
-                <Link to="/admin/organization-management" className={`sidebar-item ${location.pathname === '/admin/organization-management' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">🏢</span> <span className="sidebar-text">{t('organizationManagement', 'Organization Management')}</span>
-                </Link>
+
                 {settings?.badges_enabled !== false && (
                   <Link to="/admin/badge-management" className={`sidebar-item ${location.pathname === '/admin/badge-management' ? 'active' : ''}`}>
                     <span className="notranslate" translate="no">🏆</span> <span className="sidebar-text">{t('badgeManagement', 'Badge Management')}</span>

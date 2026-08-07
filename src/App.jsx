@@ -186,14 +186,7 @@ export default function App() {
             </AdminRoute>
           }
         />
-        <Route
-          path="/admin/organization-management"
-          element={
-            <AdminRoute>
-              <PlaceholderPage title="Organization Management" icon="🏢" />
-            </AdminRoute>
-          }
-        />
+
         <Route
           path="/admin/badge-management"
           element={
