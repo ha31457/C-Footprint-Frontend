@@ -41,6 +41,7 @@ export default function Signup() {
     age: '',
     gender: '',
   });
+  const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -93,7 +94,8 @@ export default function Signup() {
         form.password,
         form.mobileNumber,
         form.age,
-        form.gender
+        form.gender,
+        isOrgAdmin
       );
       setSuccess(true);
       setTimeout(() => {
@@ -316,7 +318,17 @@ export default function Signup() {
                 onChange={(val) => setForm((prev) => ({ ...prev, gender: val }))}
               />
             </div>
-
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', margin: '0.5rem 0' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontWeight: '750', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={isOrgAdmin}
+                  onChange={(e) => setIsOrgAdmin(e.target.checked)}
+                  style={{ width: '16px', height: '16px', accentColor: 'var(--primary-color)' }}
+                />
+                Register as Organization Administrator
+              </label>
+            </div>
             <button
               type="submit"
               className="btn-submit"

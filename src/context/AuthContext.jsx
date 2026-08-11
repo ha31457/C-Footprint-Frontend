@@ -2,7 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import axios from 'axios';
 import { setAccessToken, setAuthHandlers } from '../api/apiClient';
 
-const AUTH_BASE_URL = 'https://c-footprint-backend.onrender.com/api/auth';
+// const AUTH_BASE_URL = 'https://c-footprint-backend.onrender.com/api/auth';
+const AUTH_BASE_URL = 'http://localhost:8080/api/auth';
 
 const AuthContext = createContext(null);
 
@@ -72,7 +73,17 @@ export function AuthProvider({ children }) {
     localStorage.setItem('refreshToken', newRefreshToken);
 
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-    const mergedUser = { ...storedUser, ...userData };
+    const incomingTemp = data.isTempPassword !== undefined ? data.isTempPassword : data.tempPassword;
+    const isTempPassword = incomingTemp !== undefined && incomingTemp !== null ? incomingTemp : (storedUser.isTempPassword || false);
+    
+    const mergedUser = { 
+      ...storedUser, 
+      ...userData, 
+      isTempPassword,
+      organizationName: userData.organizationName || storedUser.organizationName || null,
+      avatar: userData.avatar || storedUser.avatar || null,
+      avatarUrl: userData.avatarUrl || storedUser.avatarUrl || null,
+    };
     localStorage.setItem('user', JSON.stringify(mergedUser));
 
     setAccessToken(newAccessToken);
@@ -127,25 +138,35 @@ export function AuthProvider({ children }) {
     const rt = data.refreshToken || data.refresh_token;
     const { accessToken, access_token, refreshToken, refresh_token, ...userData } = data;
 
+    const incomingTemp = data.isTempPassword !== undefined ? data.isTempPassword : data.tempPassword;
+    const isTempPassword = incomingTemp !== undefined && incomingTemp !== null ? incomingTemp : false;
+
+    const finalUserData = {
+      ...userData,
+      isTempPassword
+    };
+
     console.log('[Auth] login: saving rt to localStorage:', rt);
     localStorage.setItem('refreshToken', rt);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(finalUserData));
     setAccessToken(token);
     setAccessTokenState(token);
-    setUser(userData);
+    setUser(finalUserData);
 
-    return userData;
+    return finalUserData;
   };
 
-  const signup = async (username, email, password, mobileNumber, age, gender) => {
-    const response = await axios.post(`${AUTH_BASE_URL}/signup`, {
+  const signup = async (username, email, password, mobileNumber, age, gender, isOrgAdmin = false) => {
+    const payload = {
       username,
       email,
       password,
       mobileNumber,
       age: parseInt(age, 10),
       gender,
-    });
+      isOrgAdmin
+    };
+    const response = await axios.post(`${AUTH_BASE_URL}/signup`, payload);
     return response.data;
   };
 
