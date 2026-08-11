@@ -400,7 +400,7 @@ export default function Layout({ children }) {
         {/* SIDEBAR */}
         <aside className={`app-sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           <div className="sidebar-menu">
-            {isAdmin ? (
+            {user?.role === 'ROLE_ADMIN' ? (
               // Admin sidebar items
               <>
                 <Link to="/admin/dashboard" className={`sidebar-item ${location.pathname === '/admin/dashboard' ? 'active' : ''}`}>
@@ -408,6 +408,9 @@ export default function Layout({ children }) {
                 </Link>
                 <Link to="/admin/user-management" className={`sidebar-item ${location.pathname === '/admin/user-management' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">👥</span> <span className="sidebar-text">{t('userManagement', 'User Management')}</span>
+                </Link>
+                <Link to="/admin/organization-management" className={`sidebar-item ${location.pathname === '/admin/organization-management' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">🏢</span> <span className="sidebar-text">Organization Management</span>
                 </Link>
                 <Link to="/admin/emission-factors" className={`sidebar-item ${location.pathname === '/admin/emission-factors' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">⚙️</span> <span className="sidebar-text">{t('emissionFactors', 'Emission Factors')}</span>
@@ -437,6 +440,34 @@ export default function Layout({ children }) {
                 </Link>
                 <Link to="/admin/support" className={`sidebar-item ${location.pathname === '/admin/support' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">🙋‍♂️</span> <span className="sidebar-text">{t('supportDashboard', 'Support Dashboard')}</span>
+                </Link>
+              </>
+            ) : user?.role === 'ROLE_ORG_ADMIN' ? (
+              // Org Admin sidebar items
+              <>
+                <Link to="/org-admin/dashboard" className={`sidebar-item ${location.pathname === '/org-admin/dashboard' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">🏢</span> <span className="sidebar-text">Org Dashboard</span>
+                </Link>
+                <Link to="/org-admin/employees" className={`sidebar-item ${location.pathname === '/org-admin/employees' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">👥</span> <span className="sidebar-text">Employee Roster</span>
+                </Link>
+                <Link to="/org-admin/activities" className={`sidebar-item ${location.pathname === '/org-admin/activities' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">📜</span> <span className="sidebar-text">Activity Search</span>
+                </Link>
+                <Link to="/org-admin/leaderboard" className={`sidebar-item ${location.pathname === '/org-admin/leaderboard' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">🏅</span> <span className="sidebar-text">Org Leaderboard</span>
+                </Link>
+                <Link to="/org-admin/support" className={`sidebar-item ${location.pathname === '/org-admin/support' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">🙋‍♂️</span> <span className="sidebar-text">Support Tickets</span>
+                </Link>
+                <Link to="/org-admin/reports" className={`sidebar-item ${location.pathname === '/org-admin/reports' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">📥</span> <span className="sidebar-text">Download Exports</span>
+                </Link>
+                <Link to="/profile" className={`sidebar-item ${location.pathname === '/profile' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">👤</span> <span className="sidebar-text">{t('profile', 'Profile')}</span>
+                </Link>
+                <Link to="/support" className={`sidebar-item ${location.pathname === '/support' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">🙋‍♂️</span> <span className="sidebar-text">{t('support', 'Support')}</span>
                 </Link>
               </>
             ) : (
@@ -472,9 +503,6 @@ export default function Layout({ children }) {
                 </Link>
                 <Link to="/profile" className={`sidebar-item ${location.pathname === '/profile' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">👤</span> <span className="sidebar-text">{t('profile', 'Profile')}</span>
-                </Link>
-                <Link to="/settings" className={`sidebar-item ${location.pathname === '/settings' ? 'active' : ''}`}>
-                  <span className="notranslate" translate="no">⚙️</span> <span className="sidebar-text">{t('settings', 'Settings')}</span>
                 </Link>
                 <Link to="/support" className={`sidebar-item ${location.pathname === '/support' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">🙋‍♂️</span> <span className="sidebar-text">{t('support', 'Support')}</span>

@@ -18,6 +18,14 @@ import UserActivityHistory from './pages/UserActivityHistory';
 import AdminUserManagement from './pages/AdminUserManagement';
 import AdminActivityMonitoring from './pages/AdminActivityMonitoring';
 import UserProfile from './pages/UserProfile';
+import OrgAdminRoute from './components/OrgAdminRoute';
+import OrgAdminDashboard from './pages/OrgAdminDashboard';
+import OrgAdminEmployees from './pages/OrgAdminEmployees';
+import OrgAdminActivities from './pages/OrgAdminActivities';
+import OrgAdminLeaderboard from './pages/OrgAdminLeaderboard';
+import OrgAdminSupport from './pages/OrgAdminSupport';
+import OrgAdminReports from './pages/OrgAdminReports';
+import AdminOrganizationManagement from './pages/AdminOrganizationManagement';
 import AdminSystemSettings from './pages/AdminSystemSettings';
 import AdminReports from './pages/AdminReports';
 import PlaceholderPage from './pages/PlaceholderPage';
@@ -33,6 +41,8 @@ import AdminBadgeManagement from './pages/AdminBadgeManagement';
 import AdminLeaderboardManagement from './pages/AdminLeaderboardManagement';
 import Support from './pages/Support';
 import AdminSupport from './pages/AdminSupport';
+import ChangeTempPassword from './pages/ChangeTempPassword';
+import SetupOrganization from './pages/SetupOrganization';
 
 export default function App() {
   const { user } = useAuth();
@@ -45,6 +55,14 @@ export default function App() {
       document.body.classList.remove('dark-theme');
     }
   }, []);
+
+  if (user && user.isTempPassword) {
+    return <ChangeTempPassword />;
+  }
+
+  if (user && user.role === 'ROLE_ORG_ADMIN' && !user.organizationName) {
+    return <SetupOrganization />;
+  }
 
   return (
     <Layout>
@@ -66,6 +84,8 @@ export default function App() {
             <ProtectedRoute>
               {user?.role === 'ROLE_ADMIN' ? (
                 <Navigate to="/admin/dashboard" replace />
+              ) : user?.role === 'ROLE_ORG_ADMIN' ? (
+                <Navigate to="/org-admin/dashboard" replace />
               ) : (
                 <Dashboard />
               )}
@@ -136,12 +156,54 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+
         <Route
-          path="/settings"
+          path="/org-admin/dashboard"
           element={
-            <ProtectedRoute>
-              <PlaceholderPage title="Settings" icon="⚙️" />
-            </ProtectedRoute>
+            <OrgAdminRoute>
+              <OrgAdminDashboard />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/employees"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminEmployees />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/activities"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminActivities />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/leaderboard"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminLeaderboard />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/support"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminSupport />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/reports"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminReports />
+            </OrgAdminRoute>
           }
         />
 
@@ -159,6 +221,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminUserManagement />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/organization-management"
+          element={
+            <AdminRoute>
+              <AdminOrganizationManagement />
             </AdminRoute>
           }
         />
@@ -237,7 +307,7 @@ export default function App() {
         />
 
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="*" element={<Navigate to={user?.role === 'ROLE_ADMIN' ? "/admin/dashboard" : "/dashboard"} replace />} />
+        <Route path="*" element={<Navigate to={user?.role === 'ROLE_ADMIN' ? "/admin/dashboard" : user?.role === 'ROLE_ORG_ADMIN' ? "/org-admin/dashboard" : "/dashboard"} replace />} />
       </Routes>
     </Layout>
   );
