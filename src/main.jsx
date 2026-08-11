@@ -23,10 +23,22 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>
 );
 
+// Active unregistration of service worker and cache clear-up to resolve caching/white-screen reload bugs
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registered successfully!', reg.scope))
-      .catch(err => console.log('Service Worker registration failed:', err));
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister()
+        .then(() => console.log('[ServiceWorker] Unregistered successfully.'))
+        .catch(err => console.error('[ServiceWorker] Unregistration failed:', err));
+    }
+  });
+}
+if (window.caches) {
+  caches.keys().then((keys) => {
+    keys.forEach((key) => {
+      caches.delete(key)
+        .then(() => console.log(`[CacheStorage] Cleared database: ${key}`))
+        .catch(err => console.error(`[CacheStorage] Failed to clear: ${key}`, err));
+    });
   });
 }

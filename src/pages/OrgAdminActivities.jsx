@@ -22,7 +22,9 @@ export default function OrgAdminActivities() {
       if (category) params.category = category;
 
       const response = await apiClient.get('/org-admin/activities', { params });
-      setFilterLogs(Array.isArray(response.data) ? response.data : []);
+      const data = response.data || {};
+      const logsList = Array.isArray(data) ? data : (data.activities || []);
+      setFilterLogs(logsList);
     } catch (err) {
       console.error('[OrgAdminActivities] Load error:', err);
       setError('Failed to fetch corporate activity logs list.');

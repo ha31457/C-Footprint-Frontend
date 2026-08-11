@@ -16,6 +16,11 @@ export default function OrgAdminEmployees() {
   const [empActivities, setEmpActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
 
+  // Custom modal dialog states
+  const [showSuspendModal, setShowSuspendModal] = useState(false);
+  const [suspendTargetId, setSuspendTargetId] = useState(null);
+  const [customAlert, setCustomAlert] = useState({ show: false, message: '', isSuccess: false });
+
   const fetchEmployees = async () => {
     setLoading(true);
     setError('');
@@ -54,14 +59,22 @@ export default function OrgAdminEmployees() {
     }
   };
 
-  const handleDisableEmployee = async (employeeId) => {
-    if (!window.confirm('Are you sure you want to suspend this employee? They will lose access to the platform.')) return;
+  const handleDisableEmployee = (employeeId) => {
+    setSuspendTargetId(employeeId);
+    setShowSuspendModal(true);
+  };
+
+  const handleConfirmSuspend = async () => {
+    setShowSuspendModal(false);
+    const target = suspendTargetId;
+    setSuspendTargetId(null);
     try {
-      await apiClient.put(`/org-admin/employees/${employeeId}/disable`);
+      await apiClient.put(`/org-admin/employees/${target}/disable`);
       fetchEmployees();
+      setCustomAlert({ show: true, message: 'Employee has been suspended successfully.', isSuccess: true });
     } catch (err) {
       console.error('[OrgAdminEmployees] Disable employee failed:', err);
-      alert(err.response?.data?.message || 'Failed to suspend employee account.');
+      setCustomAlert({ show: true, message: err.response?.data?.message || 'Failed to suspend employee account.', isSuccess: false });
     }
   };
 
@@ -69,9 +82,10 @@ export default function OrgAdminEmployees() {
     try {
       await apiClient.put(`/org-admin/employees/${employeeId}/enable`);
       fetchEmployees();
+      setCustomAlert({ show: true, message: 'Employee account has been restored successfully.', isSuccess: true });
     } catch (err) {
       console.error('[OrgAdminEmployees] Enable employee failed:', err);
-      alert(err.response?.data?.message || 'Failed to restore employee account.');
+      setCustomAlert({ show: true, message: err.response?.data?.message || 'Failed to restore employee account.', isSuccess: false });
     }
   };
 
@@ -84,7 +98,7 @@ export default function OrgAdminEmployees() {
       setEmpActivities(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('[OrgAdminEmployees] Logs inspect failed:', err);
-      alert('Failed to inspect employee activities.');
+      setCustomAlert({ show: true, message: 'Failed to inspect employee activities.', isSuccess: false });
     } finally {
       setActivitiesLoading(false);
     }
@@ -300,6 +314,56 @@ export default function OrgAdminEmployees() {
         </div>
 
       </div>
+
+      {/* Custom Suspension Confirmation Modal */}
+      {showSuspendModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--surface-color)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-color)', maxWidth: '400px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-2xl)' }}>
+            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.8rem' }}>⚠️</span>
+            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '850', color: 'var(--text-primary)' }}>Confirm Suspension</h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.5rem', lineHeight: '1.4' }}>
+              Are you sure you want to suspend this employee? They will lose access to the platform immediately.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', justifyContent: 'center' }}>
+              <button
+                onClick={() => {
+                  setShowSuspendModal(false);
+                  setSuspendTargetId(null);
+                }}
+                style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'transparent', color: 'var(--text-secondary)', fontWeight: '750', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSuspend}
+                style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--error-color)', color: '#ffffff', fontWeight: '750', cursor: 'pointer' }}
+              >
+                Yes, Suspend
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Alert/Response Dialog */}
+      {customAlert.show && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--surface-color)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-color)', maxWidth: '400px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-2xl)' }}>
+            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.8rem' }}>{customAlert.isSuccess ? '✅' : '⚠️'}</span>
+            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '850', color: 'var(--text-primary)' }}>{customAlert.isSuccess ? 'Success' : 'Notice'}</h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.5rem', lineHeight: '1.4' }}>
+              {customAlert.message}
+            </p>
+            <button
+              onClick={() => setCustomAlert({ show: false, message: '', isSuccess: false })}
+              className="btn-submit"
+              style={{ padding: '0.6rem 1.6rem', marginTop: '1.5rem', fontWeight: '800' }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

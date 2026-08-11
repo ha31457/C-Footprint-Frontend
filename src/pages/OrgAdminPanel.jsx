@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import apiClient from '../api/apiClient';
 import { useAuth } from '../context/AuthContext';
+
+const COLORS = ['#225c3b', '#0284c7', '#769482', '#0f766e', '#8b5cf6', '#eab308', '#ec4899', '#f97316'];
 
 export default function OrgAdminPanel() {
   const { accessToken } = useAuth();
@@ -319,93 +322,84 @@ export default function OrgAdminPanel() {
 
           {overviewLoading ? (
             <div>Loading statistics...</div>
-          ) : (
-            <div>
-              {/* Summary Cards */}
-              <div className="chart-grid" style={{ marginBottom: '2rem' }}>
+                    {/* Summary Cards */}
+              <section className="admin-stats-grid" style={{ marginBottom: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 
                 {/* Users Count Card */}
-                <div className="chart-card stat-card" style={{ borderTop: '4px solid var(--primary-color)' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                    👥 Employee Directory
-                  </span>
-                  <span style={{ fontSize: '2rem', fontWeight: '850', color: 'var(--text-primary)', marginTop: '0.4rem', display: 'block' }}>
-                    {userAnalytics?.totalUsers || 0} <small style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-light)' }}>Total</small>
-                  </span>
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: '750' }}>
-                    <span style={{ color: 'var(--primary-color)' }}>🟢 {userAnalytics?.enabledUsers || 0} Active</span>
-                    <span style={{ color: 'var(--error-color)' }}>🔴 {userAnalytics?.disabledUsers || 0} Suspended</span>
+                <div className="chart-card stat-card">
+                  <span className="stat-label">Organization Employees</span>
+                  <span className="stat-value">{userAnalytics?.totalUsers || 0}</span>
+                  <div className="stat-sub-row">
+                    <span className="stat-sub-green">{userAnalytics?.enabledUsers || 0} Active</span>
+                    <span className="stat-sub-red">{userAnalytics?.disabledUsers || 0} Suspended</span>
                   </div>
                 </div>
 
                 {/* Carbon Audit card */}
-                <div className="chart-card stat-card" style={{ borderTop: '4px solid #8b5cf6' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                    🌱 Carbon Audited
-                  </span>
-                  <span style={{ fontSize: '2rem', fontWeight: '850', color: '#8b5cf6', marginTop: '0.4rem', display: 'block' }}>
-                    {summaryStats?.totalCo2?.toFixed(1) || '0.0'} <small style={{ fontSize: '0.88rem' }}>kg CO₂e</small>
-                  </span>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', marginTop: '0.5rem', display: 'block' }}>
-                    Average {summaryStats?.averageCo2PerUser?.toFixed(1) || '0.0'} kg per active profile
-                  </span>
-                </div>
-
-                {/* General Stats summary */}
-                <div className="chart-card stat-card" style={{ borderTop: '4px solid #eab308' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                    🏆 Milestone badges
-                  </span>
-                  <span style={{ fontSize: '2rem', fontWeight: '850', color: '#eab308', marginTop: '0.4rem', display: 'block' }}>
-                    {summaryStats?.badgesAwarded || 0} <small style={{ fontSize: '0.88rem' }}>Awarded</small>
-                  </span>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', marginTop: '0.5rem', display: 'block' }}>
-                    Total logged activities: <strong>{summaryStats?.totalLogs || 0}</strong>
-                  </span>
-                </div>
-
-              </div>
-
-              {/* Advanced Activity Analytics & Category breakdown */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.2rem' }}>
-                
-                {/* Category breakdown */}
-                <div className="chart-card">
-                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: '850', marginBottom: '1.5rem' }}>
-                    Category Breakdown
-                  </h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                    {Object.keys(breakdown).length > 0 ? (
-                      Object.entries(breakdown).map(([cat, val]) => {
-                        const pct = ((val / totalCategoryCo2) * 100).toFixed(0);
-                        return (
-                          <div key={cat} style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: '750' }}>
-                              <span style={{ textTransform: 'capitalize' }}>
-                                {cat === 'transport' ? '🚗 Transport' : cat === 'energy' ? '⚡ Energy' : cat}
-                              </span>
-                              <span style={{ color: 'var(--text-secondary)' }}>
-                                {val.toFixed(1)} kg ({pct}%)
-                              </span>
-                            </div>
-                            <div style={{ width: '100%', height: '8px', background: 'var(--border-color)', borderRadius: '99px', overflow: 'hidden' }}>
-                              <div style={{ width: `${pct}%`, height: '100%', background: cat === 'transport' ? 'var(--primary-color)' : '#8b5cf6', borderRadius: '99px' }} />
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <p style={{ color: 'var(--text-light)', fontStyle: 'italic', margin: 0 }}>No category breakdown stats logged yet.</p>
-                    )}
+                <div className="chart-card stat-card">
+                  <span className="stat-label">Organization Carbon Log Count</span>
+                  <span className="stat-value">{activitiesAnalytics?.totalLogs || 0}</span>
+                  <div className="stat-sub-row">
+                    <span className="stat-sub-blue">{activitiesAnalytics?.logsLoggedToday || 0} Logged Today</span>
                   </div>
                 </div>
 
-                {/* Range Filter Activity stats */}
+                {/* General Stats summary */}
+                <div className="chart-card stat-card">
+                  <span className="stat-label">Total Organization CO2</span>
+                  <span className="stat-value" style={{ color: 'var(--accent-color)' }}>
+                    {activitiesAnalytics?.totalCo2EmissionKgs?.toFixed(2) || '0.00'} kg
+                  </span>
+                  <div className="stat-sub-row">
+                    <span>Average {summaryStats?.averageCo2PerEmployee?.toFixed(1) || '0.0'} kg per employee</span>
+                  </div>
+                </div>
+
+              </section>
+
+              {/* Chart Visual Breakdown */}
+              <section className="chart-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.2rem', marginBottom: '2rem' }}>
+                
+                {/* Category breakdown Pie Chart */}
                 <div className="chart-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.8rem' }}>
-                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: '850' }}>
-                      Emissions Activity Analytics
-                    </h3>
+                  <h3>Organization Category Breakdown</h3>
+                  {activitiesAnalytics?.categoryBreakdown && activitiesAnalytics.categoryBreakdown.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={280}>
+                      <PieChart>
+                        <Pie
+                          data={activitiesAnalytics.categoryBreakdown}
+                          dataKey="co2Emission"
+                          nameKey="category"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={90}
+                          label={(props) => {
+                            const { name, percent, payload } = props;
+                            if (!percent || percent <= 0) return '';
+                            const categoryName = payload?.category || name || 'unknown';
+                            const percentageValue = payload?.percentage || (percent * 100);
+                            return `${categoryName.toUpperCase()} (${percentageValue.toFixed(1)}%)`;
+                          }}
+                        >
+                          {activitiesAnalytics.categoryBreakdown.map((entry, index) => (
+                            <Cell key={entry.category} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value) => `${parseFloat(value).toFixed(2)} kg CO2e`} />
+                        <Legend formatter={(value) => value.toUpperCase()} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)' }}>
+                      No carbon logs recorded by your employees yet.
+                    </div>
+                  )}
+                </div>
+
+                {/* Emissions Trend Line Chart */}
+                <div className="chart-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.8rem' }}>
+                    <h3 style={{ margin: 0 }}>Organization Emissions Trend</h3>
                     <select
                       value={activitiesRange}
                       onChange={(e) => setActivitiesRange(e.target.value)}
@@ -420,35 +414,35 @@ export default function OrgAdminPanel() {
                         outline: 'none'
                       }}
                     >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
+                      <option value="daily">Daily (Today)</option>
+                      <option value="weekly">Weekly (Last 7 Days)</option>
+                      <option value="monthly">Monthly (Last 30 Days)</option>
+                      <option value="yearly">Yearly (Last Year)</option>
                     </select>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem 1rem', background: 'var(--bg-color)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                      <span style={{ fontSize: '0.82rem', fontWeight: '750', color: 'var(--text-secondary)' }}>Range Emissions Sum:</span>
-                      <span style={{ fontSize: '0.95rem', fontWeight: '850', color: 'var(--primary-color)' }}>
-                        {activitiesAnalytics?.totalCo2EmissionKgs?.toFixed(2) || activitiesAnalytics?.totalCo2?.toFixed(2) || activitiesAnalytics?.totalCo2Emission?.toFixed(2) || '0.00'} kg
-                      </span>
+                  {overviewLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)' }}>
+                      Loading trend data...
                     </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem 1rem', background: 'var(--bg-color)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                      <span style={{ fontSize: '0.82rem', fontWeight: '750', color: 'var(--text-secondary)' }}>Activity Submissions:</span>
-                      <span style={{ fontSize: '0.95rem', fontWeight: '850', color: 'var(--text-primary)' }}>
-                        {activitiesAnalytics?.activityCount || activitiesAnalytics?.totalLogs || 0} submissions
-                      </span>
+                  ) : activitiesAnalytics?.trend && activitiesAnalytics.trend.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={activitiesAnalytics.trend}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="label" />
+                        <YAxis />
+                        <Tooltip formatter={(value) => `${parseFloat(value).toFixed(2)} kg`} />
+                        <Line type="monotone" dataKey="co2Emission" stroke="#0284c7" strokeWidth={3} activeDot={{ r: 8 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '280px', color: 'var(--text-light)', textAlign: 'center' }}>
+                      No trend data available for this range.
                     </div>
-
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-light)', margin: '0.2rem 0 0 0', lineHeight: '1.4' }}>
-                      * Emissions analytics compile metrics corresponding to logs completed within the selected range bucket.
-                    </p>
-                  </div>
+                  )}
                 </div>
 
-              </div>
+              </section>
             </div>
           )}
         </div>

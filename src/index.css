@@ -41,6 +41,7 @@
   --shadow-md: 0 8px 20px -3px rgba(139, 92, 246, 0.12);
   --shadow-lg: 0 16px 30px -4px rgba(139, 92, 246, 0.18);
   --shadow-xl: 0 28px 40px -6px rgba(139, 92, 246, 0.25);
+  --error-color: var(--accent-rose);
 }
 
 body.dark-theme {
@@ -75,6 +76,7 @@ body.dark-theme {
   --shadow-md: 0 8px 20px -3px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 16px 30px -4px rgba(0, 0, 0, 0.55);
   --shadow-xl: 0 28px 40px -6px rgba(0, 0, 0, 0.65);
+  --error-color: var(--accent-rose);
 }
 
 * {

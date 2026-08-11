@@ -364,6 +364,26 @@ export default function Layout({ children }) {
             </>
           ) : (
             <>
+              {user?.organizationName && (
+                <span
+                  className="org-badge"
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: '750',
+                    background: 'rgba(16, 185, 129, 0.12)',
+                    color: 'var(--primary-color)',
+                    padding: '0.35rem 0.65rem',
+                    borderRadius: '8px',
+                    marginRight: '0.8rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.3rem',
+                    border: '1px solid rgba(16, 185, 129, 0.2)'
+                  }}
+                >
+                  🏢 {user.organizationName}
+                </span>
+              )}
               <Link to="/profile" className="navbar-profile-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '0.8rem' }}>
                 <img
                   src={getAvatarUrl(user?.avatarUrl, user?.avatar, user?.gender, user?.username)}
@@ -447,6 +467,9 @@ export default function Layout({ children }) {
               <>
                 <Link to="/org-admin/dashboard" className={`sidebar-item ${location.pathname === '/org-admin/dashboard' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">🏢</span> <span className="sidebar-text">Org Dashboard</span>
+                </Link>
+                <Link to="/org-admin/analytics" className={`sidebar-item ${location.pathname === '/org-admin/analytics' ? 'active' : ''}`}>
+                  <span className="notranslate" translate="no">📈</span> <span className="sidebar-text">Org Analytics</span>
                 </Link>
                 <Link to="/org-admin/employees" className={`sidebar-item ${location.pathname === '/org-admin/employees' ? 'active' : ''}`}>
                   <span className="notranslate" translate="no">👥</span> <span className="sidebar-text">Employee Roster</span>

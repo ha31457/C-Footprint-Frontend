@@ -25,6 +25,7 @@ import OrgAdminActivities from './pages/OrgAdminActivities';
 import OrgAdminLeaderboard from './pages/OrgAdminLeaderboard';
 import OrgAdminSupport from './pages/OrgAdminSupport';
 import OrgAdminReports from './pages/OrgAdminReports';
+import OrgAdminAnalytics from './pages/OrgAdminAnalytics';
 import AdminOrganizationManagement from './pages/AdminOrganizationManagement';
 import AdminSystemSettings from './pages/AdminSystemSettings';
 import AdminReports from './pages/AdminReports';
@@ -203,6 +204,14 @@ export default function App() {
           element={
             <OrgAdminRoute>
               <OrgAdminReports />
+            </OrgAdminRoute>
+          }
+        />
+        <Route
+          path="/org-admin/analytics"
+          element={
+            <OrgAdminRoute>
+              <OrgAdminAnalytics />
             </OrgAdminRoute>
           }
         />

@@ -14,6 +14,7 @@ export default function SetupOrganization() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -117,32 +118,70 @@ export default function SetupOrganization() {
               />
             </label>
 
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-secondary)' }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-secondary)', position: 'relative' }}>
               Industry
-              <select
-                name="industry"
-                value={form.industry}
-                onChange={handleChange}
-                required
+              <div
+                onClick={() => setDropdownOpen(!dropdownOpen)}
                 style={{
                   padding: '0.7rem 0.9rem',
                   borderRadius: '10px',
                   border: '1.5px solid var(--border-color)',
                   background: 'var(--bg-color)',
-                  color: 'var(--text-primary)',
-                  outline: 'none',
+                  color: form.industry ? 'var(--text-primary)' : 'var(--text-light)',
+                  cursor: 'pointer',
                   fontSize: '0.85rem',
-                  fontWeight: '600'
+                  fontWeight: '600',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  minHeight: '38px',
+                  boxSizing: 'border-box'
                 }}
               >
-                <option value="">-- Select Industry --</option>
-                <option value="Technology">Technology</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Retail">Retail</option>
-                <option value="Energy">Energy</option>
-                <option value="Services">Services</option>
-                <option value="Other">Other</option>
-              </select>
+                <span>{form.industry || '-- Select Industry --'}</span>
+                <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)' }}>▼</span>
+              </div>
+              {dropdownOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    marginTop: '0.4rem',
+                    background: 'var(--surface-color)',
+                    border: '1.5px solid var(--border-color)',
+                    borderRadius: '10px',
+                    boxShadow: 'var(--shadow-lg)',
+                    zIndex: 10,
+                    maxHeight: '160px',
+                    overflowY: 'auto'
+                  }}
+                >
+                  {['Technology', 'Manufacturing', 'Retail', 'Energy', 'Services', 'Other'].map((ind) => (
+                    <div
+                      key={ind}
+                      onClick={() => {
+                        setForm({ ...form, industry: ind });
+                        setDropdownOpen(false);
+                      }}
+                      style={{
+                        padding: '0.65rem 0.9rem',
+                        cursor: 'pointer',
+                        fontSize: '0.82rem',
+                        fontWeight: '600',
+                        color: 'var(--text-primary)',
+                        background: form.industry === ind ? 'var(--bg-color)' : 'transparent',
+                        transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'var(--bg-color)'}
+                      onMouseLeave={(e) => e.target.style.background = form.industry === ind ? 'var(--bg-color)' : 'transparent'}
+                    >
+                      {ind}
+                    </div>
+                  ))}
+                </div>
+              )}
             </label>
 
             <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-secondary)' }}>
