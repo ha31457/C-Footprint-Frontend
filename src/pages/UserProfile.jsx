@@ -387,6 +387,12 @@ export default function UserProfile() {
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '700', display: 'block', marginBottom: '0.3rem' }}>Email Address</span>
                   <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--text-primary)', wordBreak: 'break-all', overflowWrap: 'break-word' }}>{profile?.email}</span>
                 </div>
+                {profile?.organizationName && (
+                  <div style={{ padding: '1.2rem', background: 'var(--bg-color)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '700', display: 'block', marginBottom: '0.3rem' }}>Organization</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--text-primary)' }}>{profile.organizationName}</span>
+                  </div>
+                )}
                 {isUser && (
                   <>
                     <div style={{ padding: '1.2rem', background: 'var(--bg-color)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
